@@ -2,7 +2,6 @@ package utils;
 
 public class Resource
 {
-
   public enum Result
   {
     RESULT_OK,
@@ -12,8 +11,5 @@ public class Resource
     RESULT_INVALID_DIRECTORY,
     RESULT_INVALID_FORMAT,
     RESULT_INVALID_FILE_FORMAT,
-
-
-
   }
 }

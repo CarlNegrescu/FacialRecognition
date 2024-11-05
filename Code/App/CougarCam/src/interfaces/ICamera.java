@@ -2,7 +2,7 @@ package interfaces;
 
 import utils.Resource;
 
-interface ICamera
+public interface ICamera
 {
   /**
    * Initializes the Camera Module for use
