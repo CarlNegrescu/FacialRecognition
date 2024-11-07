@@ -1,5 +1,10 @@
 package cameraModule;
-
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.highgui.HighGui;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.imgproc.Imgproc;
 import interfaces.ICamera;
 import utils.Resource;
 
@@ -8,7 +13,7 @@ public class frontdoorCamera implements ICamera
   @Override
   public Resource.Result init()
   {
-    return null;
+
   }
 
   @Override
