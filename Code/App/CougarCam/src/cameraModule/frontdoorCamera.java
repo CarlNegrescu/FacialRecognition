@@ -10,17 +10,25 @@ import utils.Resource;
 
 public class frontdoorCamera implements ICamera
 {
+  private VideoCapture camera;
+  private Mat frame;
+
+
   @Override
   public Resource.Result init()
   {
-
+    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    camera = new VideoCapture(0);
+    frame = new Mat();
+    return Resource.Result.RESULT_OK;
   }
 
   @Override
   public Resource.Result openCamera(String windowName)
   {
-    return null;
+    camera.open(0);
   }
+
 
   @Override
   public Resource.Result closeCamera()
