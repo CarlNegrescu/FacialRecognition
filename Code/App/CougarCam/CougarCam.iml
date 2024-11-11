@@ -10,12 +10,12 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../opencv/build/java/opencv-4100.jar!/" />
+          <root url="jar://$USER_HOME$/OneDrive/Documents/School Documents/Cal State/Fall 2024/Software Engineering CS 370/Project Code/CameraSystem/dev_carl/Code/App/CougarCam/resources/opencv/build/java/opencv-4100.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../opencv/build/java/opencv-4100.jar!/" />
-          <root url="jar://$MODULE_DIR$/../../../../../../opencv/build/java/opencv-4100.jar!/" />
+          <root url="jar://$USER_HOME$/OneDrive/Documents/School Documents/Cal State/Fall 2024/Software Engineering CS 370/Project Code/CameraSystem/dev_carl/Code/App/CougarCam/resources/opencv/build/java/opencv-4100.jar!/" />
+          <root url="jar://$USER_HOME$/OneDrive/Documents/School Documents/Cal State/Fall 2024/Software Engineering CS 370/Project Code/CameraSystem/dev_carl/Code/App/CougarCam/resources/opencv/build/java/opencv-4100.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

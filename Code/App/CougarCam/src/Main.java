@@ -1,7 +1,12 @@
-  public class Main
+import cameraModule.Camera;
+
+
+
+public class Main
   {
     public static void main(String[] args)
     {
-        System.out.println("Hello world!");
+        Camera faceDetect = new Camera(0);
+        faceDetect.openCamera();
     }
 }
