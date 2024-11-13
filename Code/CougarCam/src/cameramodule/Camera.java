@@ -26,15 +26,50 @@ public class Camera extends Thread
    */
   public Camera (int index)
   {
-    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    _camera = new VideoCapture(index);
-    _frame = new Mat();
-    _cascade = new CascadeClassifier("resources/haarcascades/haarcascade_frontalface_alt.xml");
-    _faceDetections = new MatOfRect();
-    _cropFace = new Mat();
+	  _camera = new VideoCapture(0);
+	  _frame = new Mat();
+	  _cascade = new CascadeClassifier("resources/haarcascades/haarcascade_frontalface_alt.xml");
+	  System.out.print("Created the Classifer");
+	  _faceDetections = new MatOfRect();
+	  _cropFace = new Mat();
 
+   
   }
   
+  
+  public void runCamera(VideoCapture cap)
+  {
+	  while (cont)
+	  {
+		  _camera.read(_frame);
+		
+
+		  if (_frame.empty())
+		  {
+			  System.out.println("Frame is empty");
+			  break;
+		  }
+//		  Imgproc.cvtColor(_frame, _frame, Imgproc.COLOR_RGB2GRAY);
+//		  Imgproc.equalizeHist(_frame, _frame);
+		  _cascade.detectMultiScale(_frame, _faceDetections);
+		  
+		  for (Rect rect : _faceDetections.toArray())
+		  {
+			  Imgproc.rectangle(_frame, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0), 2);
+			  _cropFace = new Mat(_frame, rect);
+			  ///send to Facial Rec
+			  ///Then Delete object and repeat
+		  }
+		  HighGui.imshow("CameraFeed", _frame);
+		  if (HighGui.waitKey(MAX_PRIORITY) == 'q')
+		  {
+			  _camera.release();
+			  break;
+		  }
+	  }
+	  HighGui.destroyAllWindows();
+	  }
+
   /**
    * @brief implements the java thread library function
    */
@@ -43,16 +78,16 @@ public class Camera extends Thread
     while (cont)
     {
       _camera.read(_frame);
-
+      System.out.println("Read in Frame");
       if (_frame.empty())
       {
         System.out.println("Frame is empty");
         break;
       }
-      Imgproc.cvtColor(_frame, _frame, Imgproc.COLOR_RGB2GRAY);
-      Imgproc.equalizeHist(_frame, _frame);
+//      Imgproc.cvtColor(_frame, _frame, Imgproc.COLOR_RGB2GRAY);
+//      Imgproc.equalizeHist(_frame, _frame);
       _cascade.detectMultiScale(_frame, _faceDetections);
-
+      System.out.println("Detected Face");
       for (Rect rect : _faceDetections.toArray())
       {
         Imgproc.rectangle(_frame, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0), 2);
@@ -61,7 +96,15 @@ public class Camera extends Thread
         ///Then Delete object and repeat
       }
       HighGui.imshow("CameraFeed", _frame);
+      if (HighGui.waitKey(MAX_PRIORITY) == 'q')
+	  {
+    	  System.out.println("Exit Key detected");
+		  _camera.release();
+		  break;
+	  }
     }
+    HighGui.destroyAllWindows();
+    System.out.println("Destroying Windows");
   }
 
   /**
