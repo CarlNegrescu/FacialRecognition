@@ -13,14 +13,10 @@ public class Main
   public static void main(String[] args)
   {
 	  System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-	  VideoCapture cap = new VideoCapture(0);
+	  System.out.println("Starting Camera");
 	  Camera cam = new Camera(0);
-	  cam.run();
-	  
-	  
-	  
-	  
-	  
+	  cam.openCamera();
+
   }
 //    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 //    VideoCapture _camera = new VideoCapture(0);

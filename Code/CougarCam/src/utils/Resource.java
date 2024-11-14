@@ -2,6 +2,11 @@ package utils;
 
 public class Resource 
 {
+  public String firstName;
+  public String lastName;
+  public Boolean validFace;
+  public int id;
+  
 	public enum Result
 	  {
 	    RESULT_OK,
@@ -11,5 +16,15 @@ public class Resource
 	    RESULT_INVALID_DIRECTORY,
 	    RESULT_INVALID_FORMAT,
 	    RESULT_INVALID_FILE_FORMAT,
+	    RESULT_UNABLE_TO_JOIN_THREAD
 	  }
+	
+	public Resource()
+	{
+	  firstName = "";
+	  lastName = "";
+	  id = 0;
+	  validFace = false;
+	}
+	
 }
