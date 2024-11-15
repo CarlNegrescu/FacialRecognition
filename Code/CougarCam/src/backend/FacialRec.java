@@ -66,12 +66,14 @@ public class FacialRec implements Runnable
       //<result.firstName = whatever the name is
       //<result.lastName = lastname
       //< result.id unique identifer
+      result.user = Resource.Result.RESULT_USER_RECOGNIZED;
     }
     else
     {
       result.validFace  = false;
       result.firstName  = null;
       result.lastName   = null;
+      result.user       = Resource.Result.RESULT_USER_NOT_RECOGNIZED;
       result.id         = 0;
     }
      

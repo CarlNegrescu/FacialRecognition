@@ -35,12 +35,12 @@ public class CameraModule implements Runnable
       try
       {
         inputFace = FacialRec.completedQueue.take();
+        displayMessage(inputFace);
       }
       catch (Exception e)
       {
         e.printStackTrace();
       }
-      displayMessage(inputFace);
       
       if (!cont)
       {
