@@ -4,6 +4,7 @@ import java.util.concurrent.*;
 import utils.Resource;
 
 
+
 public class CameraModule implements Runnable
 {
   private FacialRec recognizer;
@@ -15,8 +16,7 @@ public class CameraModule implements Runnable
   
   public CameraModule ()
   {
-    camera = new Camera(0);
-    recognizer = new FacialRec();
+
   }
   
   public void displayMessage(Resource result)
@@ -30,11 +30,11 @@ public class CameraModule implements Runnable
     inputFace = new Resource();
     camera.openCamera();
     recognizer.startFacialRec();
+    /// Face in frame 
     while (cont)
     {
       try
       {
-        inputFace = FacialRec.completedQueue.take();
         displayMessage(inputFace);
       }
       catch (Exception e)

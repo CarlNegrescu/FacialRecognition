@@ -1,4 +1,11 @@
+/*
+ * @brief helper class, creating an easy to use return types
+ * 
+ * @author Carl Negrescu
+ * @date 11/16/2024
+ */
 package utils;
+import org.opencv.core.*;
 
 public class Resource 
 {
@@ -7,9 +14,10 @@ public class Resource
   public Boolean validFace;
   public int id;
   public Result user;
+  public Mat userEncode;
   
 	public enum Result
-	  {
+	{
 	    RESULT_OK,
 	    RESULT_FAILED,
 	    RESULT_INVALID_DATA,
@@ -20,7 +28,7 @@ public class Resource
 	    RESULT_UNABLE_TO_JOIN_THREAD,
 	    RESULT_USER_RECOGNIZED,
 	    RESULT_USER_NOT_RECOGNIZED
-	  }
+	}
 	
 	public Resource()
 	{

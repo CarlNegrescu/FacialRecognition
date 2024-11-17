@@ -1,12 +1,10 @@
 package cougarCam;
 
 import org.opencv.core.*;
-import org.opencv.highgui.HighGui;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.objdetect.CascadeClassifier;
-import org.opencv.videoio.VideoCapture;
 import cameramodule.Camera;
-
+import cougarCam.DoorManager;
+import backend.TestDataAccess;
+import utils.Resource;
 
 public class Main
 {
@@ -14,8 +12,14 @@ public class Main
   {
 	  System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	  System.out.println("Starting Camera");
-	  Camera cam = new Camera(0);
-	  cam.openCamera();
+	  TestDataAccess dao = new TestDataAccess();
+	  Resource user = new Resource();
+	  dao.addUser(user);
+	  DoorManager dmanager = new DoorManager(dao);
+	  dmanager.startDoorManager();
+	  
+	  
+
 
   }
 //    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);

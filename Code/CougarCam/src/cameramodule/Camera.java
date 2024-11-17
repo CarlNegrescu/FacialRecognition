@@ -1,5 +1,10 @@
+/*
+ * @brief Camera implementation class, opens the camera, detects face in the frame, sends cropped Face vector to Facial Recognition
+ * 
+ * @author Carl Negrescu
+ * @date 11/15/2024
+ */
 package cameramodule;
-
 
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
@@ -10,6 +15,7 @@ import org.opencv.videoio.VideoCapture;
 import utils.Resource;
 import java.lang.Thread;
 import backend.FacialRec;
+import java.util.concurrent.*;
 //import static org.opencv.imgcodecs.Imgcodecs.imwrite;
 
 public class Camera implements Runnable
@@ -20,7 +26,7 @@ public class Camera implements Runnable
   private CascadeClassifier _cascade;
   private MatOfRect _faceDetections;
   private Mat _cropFace;
-  
+  private BlockingQueue<Mat> _faceQueue;
   private Thread cameraThread;
   
   
@@ -28,16 +34,14 @@ public class Camera implements Runnable
    * @brief Creates a Camera object
    * @param index the Camera index, the default is 0
    */
-  public Camera (int index)
+  public Camera (int index, BlockingQueue<Mat> faceQueue)
   {
-    System.out.println("Entered Constructor");
+    System.out.println("In Camera Constructor");
+    _faceQueue = faceQueue;
 	  _camera = new VideoCapture(0);
 	  System.out.println("VideoCapture Created");
 	  _frame = new Mat();
-	  System.out.println("Frame Created");
-	  System.out.println("Creating the Classifer");
 	  _cascade = new CascadeClassifier("resources/haarcascades/haarcascade_frontalface_default.xml");
-	  System.out.println("Created the Classifer");
 	  _faceDetections = new MatOfRect();
   }
 
@@ -51,7 +55,6 @@ public class Camera implements Runnable
     while (cont)
     {
       _camera.read(_frame);
-      System.out.println("Read in Frame");
       if (_frame.empty())
       {
         System.out.println("Frame is empty");
@@ -97,7 +100,7 @@ public class Camera implements Runnable
     try
     {
       cont = false;
-      cameraThread.join();
+      cameraThread.join(500);
     }
     catch (Exception e)
     {
@@ -116,7 +119,7 @@ public class Camera implements Runnable
   {
     try
     {
-      FacialRec.faceQueue.put(face);
+      _faceQueue.put(face);
       System.out.println("Face added for Recogntion");
     }
     catch (InterruptedException e)
