@@ -13,15 +13,18 @@ import java.util.List;
 
 public interface IDataAccess 
 {
-  public Resource.Result addUser(Resource inputUser );
+  /*
+   * @brief Adds a user to the database
+   * 
+   * @param Resource object with all the users details 
+   */
+  public Resource.Result addUser(Resource inputUser);
   
-  public Resource.Result deleteUser();
+  public Resource.Result deleteUser(int id);
   
-  public Resource.Result updateUser();
+  public Resource.Result updateUser(Resource inputUser);
   
-  public void listUsers();
-  
-  public void getUser();
+  public Resource getUser(int id);
   
   /*
    * @brief gets all the users in the database and returns it in a Array list
@@ -29,7 +32,4 @@ public interface IDataAccess
    * @return List of Mat objects 
    */
   public List<Resource> getUsers();
-  
-  
-
 }

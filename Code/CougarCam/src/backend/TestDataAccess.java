@@ -25,22 +25,18 @@ public class TestDataAccess implements IDataAccess
    return Resource.Result.RESULT_OK; 
  }
   
-  public Resource.Result deleteUser()
+  public Resource.Result deleteUser(int id)
   {
     return Resource.Result.RESULT_OK;
   }
   
-  public Resource.Result updateUser()
+  public Resource.Result updateUser(Resource inputUser)
   {
     return Resource.Result.RESULT_OK;
   }
  
-  public void listUsers()
-  {
-
-  }
   
-  public void getUser() {}
+  public Resource getUser(int id){ return null;}
   
   
   
