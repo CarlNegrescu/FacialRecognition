@@ -19,11 +19,11 @@ public class DoorManager implements Runnable
   public static final ArrayBlockingQueue<Mat> faceQueue = new ArrayBlockingQueue<Mat>(5);
   public static final ArrayBlockingQueue<Resource> completedQueue = new ArrayBlockingQueue<Resource>(5);
   
-  private FacialRec _recognizer;
-  private Camera    _camera;
-  private Thread    _doorThread;
-  private Boolean   _cont = true;
-  private Resource  _result;
+  private FacialRec   _recognizer;
+  private Camera      _camera;
+  private Thread      _doorThread;
+  private Boolean     _cont = true;
+  private Resource    _result;
   private IDataAccess _dataAccessObject;
   
   /*

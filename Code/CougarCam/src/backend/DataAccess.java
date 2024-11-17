@@ -9,7 +9,6 @@ package backend;
 
 import backend.IDataAccess;
 import utils.Resource;
-
 import java.sql.Statement;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -19,15 +18,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
 
 public class DataAccess implements IDataAccess 
 {
-  private String url = "jdbc::sqlite::resources/facesDataBase.db";
-  private String sql = "INSERT INTO users (first_name, last_name, face_features) VALUES (?, ?, ?)";
+  private String url        = "jdbc::sqlite::resources/facesDataBase.db";
+  private String sql        = "INSERT INTO users (first_name, last_name, face_features) VALUES (?, ?, ?)";
   private String queryTable = "SELECT ROWID as id, first_name, last_name, face_features FROM users";
   Connection connection;
 

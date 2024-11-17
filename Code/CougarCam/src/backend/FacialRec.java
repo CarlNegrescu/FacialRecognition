@@ -33,10 +33,10 @@ public class FacialRec implements Runnable
   public FacialRec(BlockingQueue<Mat> faceQueue, BlockingQueue<Resource> completedQueue, IDataAccess dataObject)
   {
     System.out.println("In FacialRec Constructor");
-    _dataObject = dataObject;
-    _faceQueue = faceQueue;
+    _dataObject     = dataObject;
+    _faceQueue      = faceQueue;
     _completedQueue = completedQueue;
-    faceRecognizer = FaceRecognizerSF.create("resources/face_recognition_sface_2021dec.onnx", "");
+    faceRecognizer  = FaceRecognizerSF.create("resources/face_recognition_sface_2021dec.onnx", "");
   }
   
   @Override
@@ -59,16 +59,14 @@ public class FacialRec implements Runnable
   
   private Resource recognizeFace(Mat face)
   {
-    Resource result = new Resource();
-    Resource dataBaseResource = new Resource();
-    users = new ArrayList<Resource>();
-    users = _dataObject.getUsers();
-    Iterator<Resource> iter = users.iterator();
-    ///Pull faces from data base, and compare with the given faces?
-    /// using the faces DAO
+    Resource result             = new Resource();
+    Resource dataBaseResource   = new Resource();
+    users                       = new ArrayList<Resource>();
+    users                       = _dataObject.getUsers();
+    Iterator<Resource> iter     = users.iterator();
+    Mat faceRecognizeFeatures   = new Mat();
+    Mat faceDBFeatures          = new Mat();
     
-    Mat faceRecognizeFeatures = new Mat();
-    Mat faceDBFeatures = new Mat();
     faceRecognizer.feature(face, faceRecognizeFeatures);
     faceRecognizeFeatures = faceRecognizeFeatures.clone();
     

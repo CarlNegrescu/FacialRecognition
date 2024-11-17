@@ -9,14 +9,11 @@ package cameramodule;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.highgui.HighGui;
-import org.opencv.imgcodecs.*;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.videoio.VideoCapture;
 import utils.Resource;
 import java.lang.Thread;
-import backend.FacialRec;
 import java.util.concurrent.*;
-//import static org.opencv.imgcodecs.Imgcodecs.imwrite;
 
 public class Camera implements Runnable
 {
@@ -37,12 +34,12 @@ public class Camera implements Runnable
   public Camera (int index, BlockingQueue<Mat> faceQueue)
   {
     System.out.println("In Camera Constructor");
-    _faceQueue = faceQueue;
-	  _camera = new VideoCapture(0);
+    _faceQueue       = faceQueue;
+	  _camera          = new VideoCapture(0);
 	  System.out.println("VideoCapture Created");
-	  _frame = new Mat();
-	  _cascade = new CascadeClassifier("resources/haarcascades/haarcascade_frontalface_default.xml");
-	  _faceDetections = new MatOfRect();
+	  _frame           = new Mat();
+	  _cascade         = new CascadeClassifier("resources/haarcascades/haarcascade_frontalface_default.xml");
+	  _faceDetections  = new MatOfRect();
   }
 
   /**
@@ -65,7 +62,8 @@ public class Camera implements Runnable
       _cascade.detectMultiScale(_frame, _faceDetections);
       for (Rect rect : _faceDetections.toArray())
       {
-        Imgproc.rectangle(_frame, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0), 2);
+        Imgproc.rectangle(_frame, new Point(rect.x, rect.y), 
+                          new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0), 2);
         _cropFace = new Mat(_frame, rect);
         processFaceForRecognition(_cropFace); ///< Sending the processed face for recognition
       }
@@ -108,11 +106,6 @@ public class Camera implements Runnable
       result = Resource.Result.RESULT_UNABLE_TO_JOIN_THREAD;
     }
     return result;
-  }
-
-  public Resource.Result takePicture()
-  {
-    return null;
   }
   
   private void processFaceForRecognition(Mat face)
