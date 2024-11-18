@@ -1,18 +1,19 @@
 package frontend;
 
 import java.awt.image.BufferedImage;
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import frontend.CameraUIActionListener;
 import javax.swing.JTextField;
 import backend.TestDataAccess;
 import cougarCam.DoorManager;
+import frontend.AdminUI;
 import utils.Resource;
 
 public class CameraUI{
@@ -21,14 +22,17 @@ public class CameraUI{
 	public JButton login;
 	public JButton start;
 	private JFrame StartFrame;
-	private JPanel Layout;
-
+	
+	
 	public void startApp() {
 		ButtonListener listener = new ButtonListener();
+		JPanel tidy = new JPanel();
+		FlowLayout layout = new FlowLayout();
+		
+		tidy.setLayout(layout);
 		
 		// Create a new JFrame
 		StartFrame = new JFrame("Cougar Camera");
-		Layout = new JPanel(new BorderLayout());
 
 		login = new JButton("Log In");
 		start = new JButton("Start Camera");
@@ -36,24 +40,23 @@ public class CameraUI{
 		start.addActionListener(listener);
 
 		Welcome = new JLabel("Welcome to Cougar Camera");
-
-		Layout.add(start, BorderLayout.EAST);
-		Layout.add(login, BorderLayout.WEST);
-		Layout.add(Welcome, BorderLayout.CENTER);
-
+		
+		tidy.add(Welcome);
+		tidy.add(login);
+		tidy.add(start);
+		StartFrame.add(tidy);
+		
+		
 		// Set frame properties
 		StartFrame.setSize(300,
 				200); // Set the size of the frame
-
+		StartFrame.pack();
 		// Close operation
 		StartFrame.setDefaultCloseOperation(
 				JFrame.EXIT_ON_CLOSE);
-		StartFrame.add(Layout);
 
 		// Make the frame visible
 		StartFrame.setVisible(true);
-
-		login.addActionListener(null);
 	}
 	class ButtonListener implements ActionListener{
 
@@ -63,6 +66,9 @@ public class CameraUI{
 			JButton clickedButton = (JButton) e.getSource();
 			if (clickedButton == login) {
 				System.out.println("Login pressed");
+				AdminUI Coug = new AdminUI();
+				Coug.startAdmin();
+				
 			} else if (clickedButton == start) {
 				//starts system
 				System.out.println("Start pressed");
