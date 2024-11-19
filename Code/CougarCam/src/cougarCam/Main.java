@@ -19,6 +19,7 @@ public class Main
 	  
 	  TestDataAccess test_dao = new TestDataAccess();
 	  DataAccess dao = new DataAccess();
+	  
 	  Mat image = Imgcodecs.imread("C:/test/carl_negrescu.jpg");
 	  Resource user = new Resource();
 	   user.userEncode = image;
@@ -26,8 +27,8 @@ public class Main
 	   user.lastName = "Negrescu";
 	   
 	  dao.addUser(user);
-	  
-	  MainUI cameraInterface = new MainUI(test_dao);
-	  ///cameraInterface.startApp();
+	  test_dao.addUser(user);
+	  MainUI cameraInterface = new MainUI(dao);
+	  cameraInterface.startApp();
   }
 }

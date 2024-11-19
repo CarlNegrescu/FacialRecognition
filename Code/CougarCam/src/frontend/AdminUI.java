@@ -64,9 +64,7 @@ public class AdminUI
     AdminFrame.add(tidy);
     
     // Set frame properties
-    AdminFrame.setSize(300,
-        200); // Set the size of the frame
-    AdminFrame.pack();
+    AdminFrame.setSize(800, 800); // Set the size of the frame
     // Close operation
     AdminFrame.setDefaultCloseOperation(
         JFrame.EXIT_ON_CLOSE);
@@ -76,20 +74,33 @@ public class AdminUI
   }
 
 
-  class ButtonListener implements ActionListener{
-
+  class ButtonListener implements ActionListener
+  {
     @Override
     public void actionPerformed(ActionEvent e) {
       // TODO Auto-generated method stub
       JButton clickedButton = (JButton) e.getSource();
-      if (clickedButton == add) {
+      if (clickedButton == add) 
+      {
 
-      } else if (clickedButton == edit) {
+      } 
+      
+      else if (clickedButton == edit) 
+      {
+    	 
+      }
+      
+      else if (clickedButton == delete) 
+      {
 
-      }else if (clickedButton == delete) {
-
-      }else if (clickedButton == logout) {
+      }
+      
+      else if (clickedButton == logout) 
+      {
 
       }
     }
-  }}
+  }
+  
+
+}

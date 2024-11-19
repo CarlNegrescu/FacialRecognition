@@ -10,6 +10,8 @@ package backend;
 import backend.IDataAccess;
 import utils.Resource;
 import java.sql.Statement;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,8 +20,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.imgcodecs.Imgcodecs;
 
 
 public class DataAccess implements IDataAccess 
@@ -169,9 +178,16 @@ public class DataAccess implements IDataAccess
         user.firstName = resultSet.getString("first_name");
         user.lastName = resultSet.getString("last_name");
         
-        Blob blob = resultSet.getBlob("face_features"); ///< converting to a byte array to convert then to a Mat Object
-        byte[] faceFeaturesBytes = blob.getBytes(1, (int) blob.length());
-        user.userEncode = convertToMat(faceFeaturesBytes);
+        byte[] blob = resultSet.getBytes("face_features"); ///< converting to a byte array to convert then to a Mat Object/// getBytes
+//        byte[] faceFeaturesBytes = blob.getBytes(1, (int) blob.length());
+//        try
+//        {
+//        	user.userEncode = convertToMat(blob);
+//        }
+//        catch (Exception e)
+//        {
+//        	e.printStackTrace();
+//        }
         System.out.println("Added One User!");
         listUsers.add(user);
       }
@@ -192,11 +208,20 @@ public class DataAccess implements IDataAccess
     
     return byteArray;
   }
-  
-  private Mat convertToMat(byte[] byteArray)
-  {
-    Mat face = new Mat(1, byteArray.length, CvType.CV_32F);
-    face.put(0, 0, byteArray);
-    return face;
-  }
+//  
+//  private Mat convertToMat(byte[] byteArray) throws Exception
+//  {
+//	  //Mat face = new Mat(1, byteArray.length, CvType.CV_32F);
+//	  //face = Imgcodecs.imdecode(new MatOfByte(byteArray), Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
+//	  BufferedImage img;
+//	  img = ImageIO.read(new ByteArrayInputStream(byteArray));
+//	  Mat mat = new Mat(img.getHeight(), img.getWidth(), CvType.CV_8UC3);
+//	  mat.put(0, 0, ((DataBufferByte) img.getRaster().getDataBuffer()).getData());
+//	  return mat;
+//
+//
+//
+//
+//
+//  }
 }

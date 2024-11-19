@@ -64,9 +64,8 @@ public class MainUI
     
     
     // Set frame properties
-    StartFrame.setSize(300,
-        200); // Set the size of the frame
-    StartFrame.pack();
+    StartFrame.setSize(800, 500); // Set the size of the frame
+    //StartFrame.pack();
     // Close operation
     StartFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

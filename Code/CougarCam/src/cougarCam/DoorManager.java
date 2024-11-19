@@ -21,13 +21,15 @@ public class DoorManager implements Runnable
   public static final ArrayBlockingQueue<Mat> faceQueue = new ArrayBlockingQueue<Mat>(5);
   public static final ArrayBlockingQueue<Resource> completedQueue = new ArrayBlockingQueue<Resource>(5);
   
-  private FacialRec   _recognizer;
-  private Camera      _camera;
-  private Thread      _doorThread;
-  private Boolean     _cont = true;
-  private Resource    _result;
-  private IDataAccess _dataAccessObject;
+  private FacialRec   	_recognizer;
+  private Camera      	_camera;
+  private Thread      	_doorThread;
+  private Boolean     	_cont = true;
+  private Resource    	_result;
+  private IDataAccess 	_dataAccessObject;
   private VideoCapture  _videoCapture;
+  private int 			_validFace;
+  private int 			_nonValidFace;
   
   /*
    * @brief Constructor creates the camera and facial Recognition objects
@@ -41,6 +43,8 @@ public class DoorManager implements Runnable
     _camera = new Camera(faceQueue);
     _recognizer = new FacialRec(faceQueue, completedQueue, _dataAccessObject);
     System.out.println("Done with DoorManager Constructor");
+    _validFace = 0;
+    _nonValidFace = 0;
   }
   
   /// @brief starts the doorManager thread
@@ -83,16 +87,38 @@ public class DoorManager implements Runnable
     return result;
   }
   
-  private void displayMessage(Resource result)
+  private void displayMessage(Resource result) throws InterruptedException
   {
-    if (result.validFace)
-    {
-      System.out.println("User Recognized");
-    }
-    else
-    {
-      System.out.println("Who are you");
-    }
+	  System.out.println("IN DisplayMessage validFace: " +_validFace + " NonValidFace: " +_nonValidFace);
+	if(_validFace >= 5 || _nonValidFace >= 50)
+	{
+		if (_validFace >= 5 && result.validFace)
+		{
+			_validFace = 0;
+			System.out.println("User Recognized");
+			System.out.printf("%n%n%n");
+			System.out.println("WELCOME " + result.firstName + " " + result.lastName);
+			System.out.printf("%n%n%n");
+		}
+		else if (_nonValidFace >= 50)
+		{
+			_nonValidFace = 0;
+			System.out.println("Who are you");
+		}
+	}
+	else
+	{
+	    if (result.validFace)
+	    {
+	      System.out.println("Adding to ValidFace Counter, current count: " + _validFace);
+	      _validFace++;
+	    }
+	    else
+	    {
+	      System.out.println("Adding to NONValidFace Counter, current count: " + _nonValidFace);
+	      _nonValidFace++;
+	    }
+	}
   }
   
   
@@ -110,12 +136,18 @@ public class DoorManager implements Runnable
         try
         {
           _result = completedQueue.take();
+          System.out.println("DoorManager took from Queue");
         }
         catch (Exception e)
         {
           e.printStackTrace();
         }
-        displayMessage(_result);
+        try {
+			displayMessage(_result);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
   }
 }
