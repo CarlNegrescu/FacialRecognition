@@ -42,12 +42,13 @@ public class FacialRec implements Runnable
   @Override
   public void run(  )
   {
+    
     while (cont)
     {
       try
       {
         inputFace = _faceQueue.take();
-        _completedQueue.put(recognizeFace(inputFace));
+        _completedQueue.put(recognizeFace(inputFace)); /// Here is the final average Mat
       }
       catch (InterruptedException e)
       {
@@ -75,7 +76,6 @@ public class FacialRec implements Runnable
       dataBaseResource = iter.next();
       faceRecognizer.feature(dataBaseResource.userEncode, faceDBFeatures);
       faceDBFeatures = faceDBFeatures.clone();
-      
       ///<getting the cosine similarity
       double cosineMatch = faceRecognizer.match(faceRecognizeFeatures, faceDBFeatures, FaceRecognizerSF.FR_COSINE);
       ///<getting the l2norm
@@ -111,7 +111,7 @@ public class FacialRec implements Runnable
   
   public void startFacialRec()
   {
-    facRecThread = new Thread(this);
+    facRecThread = new Thread(this, "Facial Thread");
     facRecThread.start();
   }
   

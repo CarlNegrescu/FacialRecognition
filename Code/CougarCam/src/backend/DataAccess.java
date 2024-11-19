@@ -54,11 +54,15 @@ public class DataAccess implements IDataAccess
     try
     {
       PreparedStatement statement = connection.prepareStatement(sql);
+      System.out.println(statement);
       statement.setString(1, inputUser.firstName);
       statement.setString(2, inputUser.lastName);
       byte[] blob = convertToBlob(inputUser.userEncode);
       statement.setBytes(3, blob);
+      System.out.println(statement);
+      System.out.println("Executing Update");
       statement.executeUpdate();
+      System.out.println("Updated Database");
     }
     catch (SQLException e)
     {
@@ -168,7 +172,7 @@ public class DataAccess implements IDataAccess
         Blob blob = resultSet.getBlob("face_features"); ///< converting to a byte array to convert then to a Mat Object
         byte[] faceFeaturesBytes = blob.getBytes(1, (int) blob.length());
         user.userEncode = convertToMat(faceFeaturesBytes);
-        
+        System.out.println("Added One User!");
         listUsers.add(user);
       }
     }
@@ -176,7 +180,7 @@ public class DataAccess implements IDataAccess
     {
       e.printStackTrace();
     }
-
+    System.out.println(listUsers);
     return listUsers;
   }
 

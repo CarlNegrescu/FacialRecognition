@@ -12,6 +12,8 @@ import cameramodule.Camera;
 import java.util.concurrent.ArrayBlockingQueue;
 import utils.Resource;
 import org.opencv.core.*;
+import org.opencv.videoio.VideoCapture;
+
 import backend.TestDataAccess;
 
 public class DoorManager implements Runnable
@@ -25,6 +27,7 @@ public class DoorManager implements Runnable
   private Boolean     _cont = true;
   private Resource    _result;
   private IDataAccess _dataAccessObject;
+  private VideoCapture  _videoCapture;
   
   /*
    * @brief Constructor creates the camera and facial Recognition objects
@@ -34,8 +37,10 @@ public class DoorManager implements Runnable
   {
     System.out.println("In DoorManagerConstructor");
     _dataAccessObject = dao;
-    _camera = new Camera(0, faceQueue);
+    _videoCapture= new VideoCapture(0);
+    _camera = new Camera(faceQueue);
     _recognizer = new FacialRec(faceQueue, completedQueue, _dataAccessObject);
+    System.out.println("Done with DoorManager Constructor");
   }
   
   /// @brief starts the doorManager thread
@@ -43,6 +48,39 @@ public class DoorManager implements Runnable
   {
     _doorThread = new Thread(this, "DoorManager");
     _doorThread.start();
+  }
+  
+  public Resource.Result stopDoorManager()
+  {
+    Resource.Result result = Resource.Result.RESULT_OK;
+    result = _recognizer.stopFacialRec();
+    result = _camera.closeCamera();
+   if (result != Resource.Result.RESULT_OK)
+   {
+     return result;
+   }
+    try
+    {
+      _cont = false;
+      if (_doorThread != null)
+      {
+        _doorThread.join();
+      }
+      System.out.println("Door Thread Stopped");
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      result = Resource.Result.RESULT_UNABLE_TO_JOIN_THREAD;
+    }
+    
+    if(_videoCapture.isOpened())
+    {
+      _videoCapture.release();
+      System.out.println("VideoCapture released");
+    }
+    
+    return result;
   }
   
   private void displayMessage(Resource result)
@@ -64,7 +102,8 @@ public class DoorManager implements Runnable
   @Override
   public void run()
   {
-    _camera.openCamera();
+    Resource.Result result = Resource.Result.RESULT_OK;
+    result = _camera.openCamera(_videoCapture);
     _recognizer.startFacialRec();
     while (_cont)
     {
@@ -78,6 +117,5 @@ public class DoorManager implements Runnable
         }
         displayMessage(_result);
     }
-    
   }
 }

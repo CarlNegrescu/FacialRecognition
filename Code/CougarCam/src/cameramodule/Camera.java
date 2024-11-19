@@ -17,6 +17,7 @@ import java.util.concurrent.*;
 
 public class Camera implements Runnable
 {
+  private final Object lock;
   private VideoCapture _camera;
   private Mat _frame;
   private boolean cont = true;
@@ -25,18 +26,21 @@ public class Camera implements Runnable
   private Mat _cropFace;
   private BlockingQueue<Mat> _faceQueue;
   private Thread cameraThread;
+  private Boolean isRunning = false;
+  
   
   
   /**
    * @brief Creates a Camera object
    * @param index the Camera index, the default is 0
    */
-  public Camera (int index, BlockingQueue<Mat> faceQueue)
+  public Camera (BlockingQueue<Mat> faceQueue)
   {
+    lock = new Object();
     System.out.println("In Camera Constructor");
     _faceQueue       = faceQueue;
-	  _camera          = new VideoCapture(0);
 	  System.out.println("VideoCapture Created");
+    //_camera          = camera;
 	  _frame           = new Mat();
 	  _cascade         = new CascadeClassifier("resources/haarcascades/haarcascade_frontalface_default.xml");
 	  _faceDetections  = new MatOfRect();
@@ -57,8 +61,6 @@ public class Camera implements Runnable
         System.out.println("Frame is empty");
         break;
       }
-//      Imgproc.cvtColor(_frame, _frame, Imgproc.COLOR_RGB2GRAY);
-//      Imgproc.equalizeHist(_frame, _frame);
       _cascade.detectMultiScale(_frame, _faceDetections);
       for (Rect rect : _faceDetections.toArray())
       {
@@ -66,18 +68,17 @@ public class Camera implements Runnable
                           new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0), 2);
         _cropFace = new Mat(_frame, rect);
         processFaceForRecognition(_cropFace); ///< Sending the processed face for recognition
+        _cropFace.release();
       }
-      
-      HighGui.imshow("CameraFeed", _frame);
+      HighGui.imshow("CameraView", _frame);
       if (HighGui.waitKey(30) == 'q')
       {
-    	  System.out.println("Exit Key detected");
-		  _camera.release();
-		  break;
+        System.out.println("Exit Key detected");
+      break;
       }
     }
-    HighGui.destroyAllWindows();
-    System.out.println("Destroying Windows");
+  
+    releaseResources();
   }
 
   /**
@@ -85,20 +86,46 @@ public class Camera implements Runnable
 
    * @return none
    */
- public void openCamera()
+ public Resource.Result openCamera(VideoCapture camera)
   {
-    cameraThread = new Thread(this);
-    cameraThread.start();
+   Resource.Result result = Resource.Result.RESULT_OK;
+   synchronized (lock)
+   {
+     if (isRunning)
+     {
+       System.out.println("Camera is already running");
+       result = Resource.Result.RESULT_ALREADY_OPEN;
+     }
+      _camera = camera;
+      isRunning = true;
+   }
+   cameraThread = new Thread(this, "Camera Thread");
+   cameraThread.start();
+   return result;
   }
 
   public Resource.Result closeCamera()
   {
     Resource.Result result = Resource.Result.RESULT_OK;
-
+    synchronized (lock)
+    {
+      if(!isRunning)
+      {
+        System.out.println("Camera is already Closed");
+        result = Resource.Result.RESULT_ALREADY_CLOSED;
+      }
+      cont = false;
+      isRunning = false;
+    }
+    
     try
     {
-      cont = false;
-      cameraThread.join(500);
+      if(cameraThread != null)
+      {
+        System.out.println("Camera Joined Successfully");
+        cameraThread.join();
+        result = Resource.Result.RESULT_JOINED_THREAD;
+      }
     }
     catch (Exception e)
     {
@@ -112,7 +139,7 @@ public class Camera implements Runnable
   {
     try
     {
-      _faceQueue.put(face);
+      _faceQueue.put(face.clone());
       System.out.println("Face added for Recogntion");
     }
     catch (InterruptedException e)
@@ -121,5 +148,17 @@ public class Camera implements Runnable
       System.out.println("Failed to add queue");
     }
   }
+  
+  private void releaseResources() {
+    if (_camera != null && _camera.isOpened()) {
+        _camera.release();
+        System.out.println("Camera resources released.");
+    }
+    if (_frame != null) {
+        _frame.release();
+    }
+    HighGui.destroyAllWindows();
+    System.out.println("All resources released.");
+}
   
 }
