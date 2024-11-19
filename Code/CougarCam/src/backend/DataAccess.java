@@ -24,7 +24,7 @@ import org.opencv.core.Mat;
 
 public class DataAccess implements IDataAccess 
 {
-  private String url        = "jdbc::sqlite::resources/facesDataBase.db";
+  private String url        = "jdbc:sqlite:./resources/facesDataBase.db";
   private String sql        = "INSERT INTO users (first_name, last_name, face_features) VALUES (?, ?, ?)";
   private String queryTable = "SELECT ROWID as id, first_name, last_name, face_features FROM users";
   Connection connection;
