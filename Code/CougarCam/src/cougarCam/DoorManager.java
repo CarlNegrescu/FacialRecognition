@@ -103,7 +103,9 @@ public class DoorManager implements Runnable
 		else if (_nonValidFace >= 50)
 		{
 			_nonValidFace = 0;
-			System.out.println("Who are you");
+			System.out.printf("%n%n%n");
+			System.out.println("USER NOT RECOGNIZED! ENTRY NOT PERMITTED");
+			System.out.printf("%n%n%n");
 		}
 	}
 	else

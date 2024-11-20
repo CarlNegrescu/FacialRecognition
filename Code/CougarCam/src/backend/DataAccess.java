@@ -180,15 +180,15 @@ public class DataAccess implements IDataAccess
         
         byte[] blob = resultSet.getBytes("face_features"); ///< converting to a byte array to convert then to a Mat Object/// getBytes
 //        byte[] faceFeaturesBytes = blob.getBytes(1, (int) blob.length());
-//        try
-//        {
-//        	user.userEncode = convertToMat(blob);
-//        }
-//        catch (Exception e)
-//        {
-//        	e.printStackTrace();
-//        }
-        System.out.println("Added One User!");
+        try
+        {
+        	user.userEncode = convertToMat(blob);
+        }
+        catch (Exception e)
+        {
+        	e.printStackTrace();
+        }
+        System.out.println("Added One User for processing");
         listUsers.add(user);
       }
     }
@@ -208,20 +208,21 @@ public class DataAccess implements IDataAccess
     
     return byteArray;
   }
-//  
-//  private Mat convertToMat(byte[] byteArray) throws Exception
-//  {
-//	  //Mat face = new Mat(1, byteArray.length, CvType.CV_32F);
-//	  //face = Imgcodecs.imdecode(new MatOfByte(byteArray), Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
+  
+  private Mat convertToMat(byte[] byteArray) throws Exception
+  {
+	  Mat face = new Mat(1, byteArray.length, CvType.CV_32F);
+	  face = Imgcodecs.imdecode(new MatOfByte(byteArray), Imgcodecs.IMREAD_UNCHANGED);
+	  
 //	  BufferedImage img;
 //	  img = ImageIO.read(new ByteArrayInputStream(byteArray));
 //	  Mat mat = new Mat(img.getHeight(), img.getWidth(), CvType.CV_8UC3);
 //	  mat.put(0, 0, ((DataBufferByte) img.getRaster().getDataBuffer()).getData());
-//	  return mat;
-//
-//
-//
-//
-//
-//  }
+	  return face;
+
+
+
+
+
+  }
 }

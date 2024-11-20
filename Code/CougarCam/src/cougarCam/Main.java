@@ -26,9 +26,9 @@ public class Main
 	   user.firstName = "Carl";
 	   user.lastName = "Negrescu";
 	   
-	  dao.addUser(user);
-	  test_dao.addUser(user);
-	  MainUI cameraInterface = new MainUI(dao);
+	  //dao.addUser(user);
+	  //test_dao.addUser(user);
+	  MainUI cameraInterface = new MainUI(test_dao);
 	  cameraInterface.startApp();
   }
 }

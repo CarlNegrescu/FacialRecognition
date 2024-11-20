@@ -15,12 +15,12 @@ public class TestDataAccess implements IDataAccess
  /// Tester adder method, 
  public Resource.Result addUser(Resource inputUser)
  {
-   Resource face = new Resource();
-   Mat image = Imgcodecs.imread("C:/test/carl_negrescu.jpg");
-   face.userEncode = image;
-   face.firstName = "Carl";
-   face.lastName = "Negrescu";
-   users.add(face);
+//   Resource face = new Resource();
+//   Mat image = Imgcodecs.imread("C:/test/carl_negrescu.jpg");
+//   face.userEncode = image;
+//   face.firstName = "Carl";
+//   face.lastName = "Negrescu";
+   users.add(inputUser);
    System.out.println("User added");
    return Resource.Result.RESULT_OK; 
  }
