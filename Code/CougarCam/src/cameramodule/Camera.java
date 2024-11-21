@@ -40,7 +40,6 @@ public class Camera implements Runnable
     System.out.println("In Camera Constructor");
     _faceQueue       = faceQueue;
 	  System.out.println("VideoCapture Created");
-    //_camera          = camera;
 	  _frame           = new Mat();
 	  _cascade         = new CascadeClassifier("resources/haarcascades/haarcascade_frontalface_default.xml");
 	  _faceDetections  = new MatOfRect();

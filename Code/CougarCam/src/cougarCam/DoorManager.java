@@ -39,7 +39,8 @@ public class DoorManager implements Runnable
   {
     System.out.println("In DoorManagerConstructor");
     _dataAccessObject = dao;
-    _videoCapture= new VideoCapture(0);
+    System.out.println("Creating VideoCapture Object");
+    _videoCapture= new VideoCapture(0); 
     _camera = new Camera(faceQueue);
     _recognizer = new FacialRec(faceQueue, completedQueue, _dataAccessObject);
     System.out.println("Done with DoorManager Constructor");

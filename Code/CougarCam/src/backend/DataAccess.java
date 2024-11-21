@@ -8,6 +8,8 @@
 package backend;
 
 import backend.IDataAccess;
+import backend.SerializeData;
+import backend.SerializeData.SerializedMat;
 import utils.Resource;
 import java.sql.Statement;
 import java.awt.image.BufferedImage;
@@ -37,9 +39,11 @@ public class DataAccess implements IDataAccess
   private String sql        = "INSERT INTO users (first_name, last_name, face_features) VALUES (?, ?, ?)";
   private String queryTable = "SELECT ROWID as id, first_name, last_name, face_features FROM users";
   Connection connection;
+  SerializeData serializeData;
 
   public DataAccess()
   {
+    serializeData = new SerializeData(); 
     try
     {
       connection = DriverManager.getConnection(url);
@@ -66,8 +70,10 @@ public class DataAccess implements IDataAccess
       System.out.println(statement);
       statement.setString(1, inputUser.firstName);
       statement.setString(2, inputUser.lastName);
-      byte[] blob = convertToBlob(inputUser.userEncode);
-      statement.setBytes(3, blob);
+      
+      SerializedMat smat = serializeData.serializeFromMat(inputUser.userEncode);
+      statement.setBytes(3, smat.getBytes());
+      
       System.out.println(statement);
       System.out.println("Executing Update");
       statement.executeUpdate();
@@ -111,13 +117,13 @@ public class DataAccess implements IDataAccess
   {
     Resource.Result result = Resource.Result.RESULT_OK;
     String query = "UPDATE users SET first_name = ?, last_name = ?, facial_encoding = ? WHERE id = ?";
-    byte[] featureBytes = convertToBlob(inputUser.userEncode);
+    SerializedMat smat = serializeData.serializeFromMat(inputUser.userEncode);
     try
     {
       PreparedStatement statement = connection.prepareStatement(query);
       statement.setString(1, inputUser.firstName);
       statement.setString(2, inputUser.lastName);
-      statement.setBytes(3, featureBytes);
+      statement.setBytes(3, smat.getBytes());
       statement.setInt(4,  inputUser.id);
       
       int rowsAffected = statement.executeUpdate();
@@ -134,11 +140,15 @@ public class DataAccess implements IDataAccess
     return result;
   }
 
-
+  /* @brief Takes in the User ID and returns the User's name
+   * 
+   * @param int id
+   * 
+   * @return Resource Object
+   */
   public Resource getUser(int id) 
   {
-    Resource.Result result = Resource.Result.RESULT_OK;
-    String query = "SELECT FROM user WHERE id = ?";
+    String query = "SELECT * FROM user WHERE id = ?";
     Resource user = new Resource();
     try
     {
@@ -165,8 +175,8 @@ public class DataAccess implements IDataAccess
   public List<Resource> getUsers()
   {
     List<Resource> listUsers = new ArrayList<Resource>();
-    Resource user = new Resource();
-
+    
+    SerializedMat smat = new SerializedMat();
     try 
     {
       Statement statement = connection.createStatement();
@@ -174,20 +184,14 @@ public class DataAccess implements IDataAccess
 
       while (resultSet.next())
       {
+        Resource user = new Resource();
         user.id = resultSet.getInt("id");
         user.firstName = resultSet.getString("first_name");
         user.lastName = resultSet.getString("last_name");
         
-        byte[] blob = resultSet.getBytes("face_features"); ///< converting to a byte array to convert then to a Mat Object/// getBytes
-//        byte[] faceFeaturesBytes = blob.getBytes(1, (int) blob.length());
-        try
-        {
-        	user.userEncode = convertToMat(blob);
-        }
-        catch (Exception e)
-        {
-        	e.printStackTrace();
-        }
+        byte[] inputByte = resultSet.getBytes("face_features"); ///< converting to a byte array to convert then to a Mat Object/// getBytes
+        smat.setBytes(inputByte);
+        user.userEncode = SerializeData.DeserializeToMat(smat);
         System.out.println("Added One User for processing");
         listUsers.add(user);
       }
@@ -200,12 +204,16 @@ public class DataAccess implements IDataAccess
     return listUsers;
   }
 
-  private byte[] convertToBlob(Mat face)
+  private byte[] convertToByte(Mat face)
   {
-    int size = (int)(face.total() * face.elemSize());
-    byte[] byteArray = new byte[size];
-    face.get(0,0, byteArray);
-    
+    MatOfByte matbyte = new MatOfByte();
+    Imgcodecs.imencode(".byte", face, matbyte);
+    byte[] byteArray = matbyte.toArray(); 
+//    
+//    int size = (int)(face.total() * face.elemSize());
+//    byte[] byteArray = new byte[size];
+//    face.get(0,0, byteArray);
+//    
     return byteArray;
   }
   
@@ -213,16 +221,14 @@ public class DataAccess implements IDataAccess
   {
 	  Mat face = new Mat(1, byteArray.length, CvType.CV_32F);
 	  face = Imgcodecs.imdecode(new MatOfByte(byteArray), Imgcodecs.IMREAD_UNCHANGED);
-	  
 //	  BufferedImage img;
 //	  img = ImageIO.read(new ByteArrayInputStream(byteArray));
 //	  Mat mat = new Mat(img.getHeight(), img.getWidth(), CvType.CV_8UC3);
 //	  mat.put(0, 0, ((DataBufferByte) img.getRaster().getDataBuffer()).getData());
 	  return face;
-
-
-
-
-
   }
+  
+  
+  
+  
 }

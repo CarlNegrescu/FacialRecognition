@@ -8,6 +8,7 @@
 package backend;
 
 import org.opencv.core.*;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.FaceRecognizerSF;
 import utils.Resource;
 import java.lang.Thread;
@@ -19,7 +20,7 @@ import backend.IDataAccess;
 
 public class FacialRec implements Runnable
 {
-  private static final double COSINE_SIMILAR_THREASHOLD = 0.050; ///0.363 /// Good camera is required ! Otherwise lower the threshold
+  private static final double COSINE_SIMILAR_THREASHOLD = 0.150; ///0.363 /// Good camera is required ! Otherwise lower the threshold
   private static final double L2NORM_SIMILAR_THRESHOLD  = 1.128; ///1.128
   private BlockingQueue<Mat> _faceQueue;
   private BlockingQueue<Resource> _completedQueue;
@@ -49,6 +50,7 @@ public class FacialRec implements Runnable
       {
         inputFace = _faceQueue.take();
         _completedQueue.put(recognizeFace(inputFace)); /// Here is the final average Mat
+        System.out.println("IN FACIAL REC");
       }
       catch (InterruptedException e)
       {
@@ -67,13 +69,16 @@ public class FacialRec implements Runnable
     Iterator<Resource> iter     = users.iterator();
     Mat faceRecognizeFeatures   = new Mat();
     Mat faceDBFeatures          = new Mat();
+    Mat grayToColorMat          = new Mat();
     
     faceRecognizer.feature(face, faceRecognizeFeatures);
     faceRecognizeFeatures = faceRecognizeFeatures.clone();
-    
+    System.out.println(users);
     while (iter.hasNext())
     {
       dataBaseResource = iter.next();
+//      grayToColorMat = dataBaseResource.userEncode;
+//      Imgproc.cvtColor(grayToColorMat, grayToColorMat, Imgproc.COLOR_GRAY2BGR);
       faceRecognizer.feature(dataBaseResource.userEncode, faceDBFeatures);
       faceDBFeatures = faceDBFeatures.clone();
       ///<getting the cosine similarity
