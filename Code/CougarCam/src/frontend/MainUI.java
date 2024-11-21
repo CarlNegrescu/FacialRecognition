@@ -25,7 +25,7 @@ public class MainUI {
     private CardLayout cardLayout;
     private JButton login, startFrontDoorCam, stopFrontDoorCam;
     private JButton manageUsersBtn, logOutBtn, addUserBtn, editUserBtn, deleteUserBtn, cancelBtn;
-
+    private DoorManager _dmanager;
     private IDataAccess _dao;
 
     // Consistent color theme for the app
@@ -228,7 +228,7 @@ public class MainUI {
 
     // Dummy method to validate login credentials (you can modify this for actual authentication)
     private boolean validateLogin(String username, String password) {
-        return username.equals("admin") && password.equals("password123");
+        return username.equals("ad") && password.equals("pass");
     }
 
     // Admin actions
@@ -248,12 +248,15 @@ public class MainUI {
     private void startCamera() {
         System.out.println("Starting Front Door Camera...");
         startFrontDoorCam.setEnabled(false);  // Disable start button
+        _dmanager = new DoorManager(_dao);
+        _dmanager.startDoorManager();
         stopFrontDoorCam.setEnabled(true);    // Enable stop button
     }
 
     private void stopCamera() {
         System.out.println("Stopping Front Door Camera...");
         startFrontDoorCam.setEnabled(true);   // Re-enable start button
+        _dmanager.stopDoorManager();
         stopFrontDoorCam.setEnabled(false);   // Disable stop button
     }
 

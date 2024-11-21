@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.core.*;
+import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
@@ -38,7 +39,11 @@ public class Main
       Imgproc.rectangle(image, new Point(rect.x, rect.y), 
                         new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0), 2);
       cropFace = new Mat(image, rect);
+      HighGui.imshow("face", cropFace);
     }
+    
+
+    HighGui.waitKey();
     //Imgproc.cvtColor(image, image, Imgproc.COLOR_GRAY2BGR);
     System.out.println("Image Channels: " + cropFace.channels());
     System.out.println("Image Size: " + cropFace.size());
@@ -48,10 +53,18 @@ public class Main
     user.userEncode = cropFace;
     user.firstName = "Carl";
     user.lastName = "Negrescu";
-
+    Resource updatedUser = new Resource();
+    updatedUser.firstName = "Ben";
+    updatedUser.lastName = "Pilande";
+    updatedUser.userEncode = cropFace;
+    
     //dao.addUser(user);
+    dao.updateUser(user, updatedUser.firstName);
     listUsers = dao.getUsers();
+    
     face = listUsers.get(0);
+    
+    //dao.deleteUser(face.firstName);
     System.out.println("Image Channels: " + face.userEncode.channels());
     System.out.println("Image Size: " + face.userEncode.size());
     System.out.println("Image Type: " + face.userEncode.type());

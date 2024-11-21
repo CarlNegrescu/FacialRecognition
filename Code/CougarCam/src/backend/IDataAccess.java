@@ -20,9 +20,9 @@ public interface IDataAccess
    */
   public Resource.Result addUser(Resource inputUser);
   
-  public Resource.Result deleteUser(int id);
+  public Resource.Result deleteUser(String firstName);
   
-  public Resource.Result updateUser(Resource inputUser);
+  public Resource.Result updateUser(Resource inputUser, String firstName);
   
   public Resource getUser(int id);
   

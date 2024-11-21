@@ -64,7 +64,10 @@ public class CameraUi implements Runnable
         Imgproc.rectangle(_frame, new Point(rect.x, rect.y), 
                           new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0), 2);
         _cropFace = new Mat(_frame, rect);
-        
+        ///if take pic is pressed
+        /// save cropped face
+        ///exit loop
+        /// send to Manager Class
         _cropFace.release();
       }
       HighGui.imshow("CameraView", _frame);

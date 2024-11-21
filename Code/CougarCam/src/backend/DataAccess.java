@@ -88,22 +88,25 @@ public class DataAccess implements IDataAccess
     return result;
   }
 
-  public Resource.Result deleteUser(int id) 
+  public Resource.Result deleteUser(String firstName) 
   {
     Resource.Result result = Resource.Result.RESULT_OK;
-    String query = "DELETE FROM user WHERE id = ?";
+    System.out.println("IN DELETE USER");
+    String query = "DELETE FROM users WHERE first_name = ?";
     try
     {
       PreparedStatement statement = connection.prepareStatement(query);
-      statement.setInt(1, id);
+      statement.setString(1, firstName);
       int rowsAffected = statement.executeUpdate();
       
       if (rowsAffected > 0)
       {
-        System.out.println("User with ID " + id + " was deleted");
+        System.out.println("User with ID " + firstName + " was deleted");
       }
-      
-      System.out.println("No user was deleted");
+      else
+      {
+        System.out.println("No user was deleted");
+      }
     }
     catch (SQLException e)
     {
@@ -113,10 +116,10 @@ public class DataAccess implements IDataAccess
     return result;
   }
 
-  public Resource.Result updateUser(Resource inputUser) 
+  public Resource.Result updateUser(Resource inputUser, String firstName) 
   {
     Resource.Result result = Resource.Result.RESULT_OK;
-    String query = "UPDATE users SET first_name = ?, last_name = ?, facial_encoding = ? WHERE id = ?";
+    String query = "UPDATE users SET first_name = ?, last_name = ?, face_features = ? WHERE first_name = ?";
     SerializedMat smat = serializeData.serializeFromMat(inputUser.userEncode);
     try
     {
@@ -124,14 +127,14 @@ public class DataAccess implements IDataAccess
       statement.setString(1, inputUser.firstName);
       statement.setString(2, inputUser.lastName);
       statement.setBytes(3, smat.getBytes());
-      statement.setInt(4,  inputUser.id);
-      
+      statement.setString(4,  firstName);
+      System.out.println("Sending to DataBase" + statement);
       int rowsAffected = statement.executeUpdate();
       
       if (rowsAffected > 0)
         System.out.println("User with ID " + inputUser.id + " was deleted");
-      
-      System.out.println("No user was deleted");
+      else
+        System.out.println("No user was deleted");
     }
     catch (SQLException e)
     {
@@ -148,7 +151,7 @@ public class DataAccess implements IDataAccess
    */
   public Resource getUser(int id) 
   {
-    String query = "SELECT * FROM user WHERE id = ?";
+    String query = "SELECT * FROM users WHERE id = ?";
     Resource user = new Resource();
     try
     {
