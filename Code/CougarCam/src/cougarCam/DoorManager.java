@@ -90,23 +90,26 @@ public class DoorManager implements Runnable
   
   private void displayMessage(Resource result) throws InterruptedException
   {
-	  System.out.println("IN DisplayMessage validFace: " +_validFace + " NonValidFace: " +_nonValidFace);
-	if(_validFace >= 5 || _nonValidFace >= 50)
+	if(_validFace >= 5 || _nonValidFace >= 30)
 	{
 		if (_validFace >= 5 && result.validFace)
 		{
 			_validFace = 0;
+			_nonValidFace = 0;
 			System.out.println("User Recognized");
 			System.out.printf("%n%n%n");
 			System.out.println("WELCOME " + result.firstName + " " + result.lastName);
 			System.out.printf("%n%n%n");
+			stopDoorManager();
 		}
-		else if (_nonValidFace >= 50)
+		else if (_nonValidFace >= 30)
 		{
 			_nonValidFace = 0;
+			_validFace = 0;
 			System.out.printf("%n%n%n");
 			System.out.println("USER NOT RECOGNIZED! ENTRY NOT PERMITTED");
 			System.out.printf("%n%n%n");
+			stopDoorManager();
 		}
 	}
 	else

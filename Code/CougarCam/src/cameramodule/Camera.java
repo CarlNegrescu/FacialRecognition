@@ -70,13 +70,10 @@ public class Camera implements Runnable
         _cropFace.release();
       }
       HighGui.imshow("CameraView", _frame);
-      if (HighGui.waitKey(30) == 'q')
-      {
-        System.out.println("Exit Key detected");
-      break;
+      HighGui.waitKey(1);
+      
       }
-    }
-  
+    HighGui.destroyAllWindows();
     releaseResources();
   }
 
@@ -111,7 +108,7 @@ public class Camera implements Runnable
       if(!isRunning)
       {
         System.out.println("Camera is already Closed");
-        result = Resource.Result.RESULT_ALREADY_CLOSED;
+        return Resource.Result.RESULT_ALREADY_CLOSED;
       }
       cont = false;
       isRunning = false;
@@ -148,16 +145,18 @@ public class Camera implements Runnable
     }
   }
   
-  private void releaseResources() {
-    if (_camera != null && _camera.isOpened()) {
-        _camera.release();
-        System.out.println("Camera resources released.");
-    }
-    if (_frame != null) {
-        _frame.release();
-    }
-    HighGui.destroyAllWindows();
-    System.out.println("All resources released.");
-}
-  
+  private void releaseResources() 
+  {
+	if (_camera != null && _camera.isOpened()) 
+	{
+	  _camera.release();
+	  System.out.println("Camera resources released.");
+	}
+	if (_frame != null) 
+	{
+	_frame.release();
+	}
+	System.out.println("All resources released.");
+  }
+
 }

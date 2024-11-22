@@ -1,5 +1,5 @@
 /*
- * @brief helper class, creating an easy to use return types
+ * @brief helper class, creating an easy to use return types, and a grouping of variables for faces 
  * 
  * @author Carl Negrescu
  * @date 11/16/2024

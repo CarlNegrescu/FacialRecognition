@@ -58,9 +58,11 @@ public class MainUI {
         // Set frame properties
         StartFrame.setSize(800, 500);
         StartFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        StartFrame.setLocationRelativeTo(null);
 
         // Make the frame visible
         StartFrame.setVisible(true);
+        
     }
 
     // Create login panel with consistent theme
@@ -93,7 +95,7 @@ public class MainUI {
         stopFrontDoorCam = new JButton("Stop Front Door Camera");
         stopFrontDoorCam.setAlignmentX(Component.CENTER_ALIGNMENT);
         styleButton(stopFrontDoorCam);
-        stopFrontDoorCam.setEnabled(false);  // Initially disabled
+        stopFrontDoorCam.setVisible(false);  // Initially disabled
         stopFrontDoorCam.addActionListener(e -> stopCamera());
 
         panel.add(titleLabel);
@@ -247,17 +249,14 @@ public class MainUI {
     // Camera Start/Stop Logic
     private void startCamera() {
         System.out.println("Starting Front Door Camera...");
-        startFrontDoorCam.setEnabled(false);  // Disable start button
         _dmanager = new DoorManager(_dao);
         _dmanager.startDoorManager();
-        stopFrontDoorCam.setEnabled(true);    // Enable stop button
+        stopFrontDoorCam.setVisible(true);
     }
 
     private void stopCamera() {
         System.out.println("Stopping Front Door Camera...");
-        startFrontDoorCam.setEnabled(true);   // Re-enable start button
         _dmanager.stopDoorManager();
-        stopFrontDoorCam.setEnabled(false);   // Disable stop button
     }
 
     /// User management actions
