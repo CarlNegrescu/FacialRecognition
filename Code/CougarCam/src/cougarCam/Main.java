@@ -13,6 +13,7 @@ import cougarCam.DoorManager;
 import backend.DataAccess;
 import backend.TestDataAccess;
 import utils.Resource;
+
 import org.opencv.videoio.VideoCapture;
 import frontend.MainUI;
 
@@ -73,5 +74,3 @@ public class Main
     //test_dao.addUser(user);
     MainUI cameraInterface = new MainUI(dao);
     cameraInterface.startApp();
-  }
-}
