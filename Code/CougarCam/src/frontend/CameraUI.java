@@ -48,9 +48,8 @@ public class CameraUI{
 		
 		
 		// Set frame properties
-		StartFrame.setSize(300,
-				200); // Set the size of the frame
-		StartFrame.pack();
+		StartFrame.setSize(800,
+				400); // Set the size of the frame
 		// Close operation
 		StartFrame.setDefaultCloseOperation(
 				JFrame.EXIT_ON_CLOSE);
@@ -66,6 +65,7 @@ public class CameraUI{
 			JButton clickedButton = (JButton) e.getSource();
 			if (clickedButton == login) {
 				System.out.println("Login pressed");
+				StartFrame.dispose();
 				AdminUI Coug = new AdminUI();
 				Coug.startAdmin();
 				

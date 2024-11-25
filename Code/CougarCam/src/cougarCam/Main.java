@@ -14,11 +14,5 @@ public class Main
 		System.out.println("Starting System");
 		CameraUI cam = new CameraUI();
 		cam.startApp();
-		//	  System.out.println("Starting Camera");
-		//	  TestDataAccess dao = new TestDataAccess();
-		//	  Resource user = new Resource();
-		//	  dao.addUser(user);
-		//	  DoorManager dmanager = new DoorManager(dao);
-		//	  dmanager.startDoorManager();
 	}
 }
