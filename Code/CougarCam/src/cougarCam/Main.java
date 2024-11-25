@@ -31,40 +31,41 @@ public class Main
     List<Resource> listUsers = new ArrayList<Resource>();
     Resource face = new Resource();
     Mat cropFace = null;
-    //image = Imgcodecs.imread("C:/test/jeff_bezos.jpg", Imgcodecs.IMREAD_COLOR);
-    //_cascade.detectMultiScale(image, faceDetections);
+    image = Imgcodecs.imread("C:/test/carl_negrescu.jpg", Imgcodecs.IMREAD_COLOR);
+    _cascade.detectMultiScale(image, faceDetections);
     
-   // for (Rect rect : faceDetections.toArray())
-    //{
-    // Imgproc.rectangle(image, new Point(rect.x, rect.y), 
-    //                    new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0), 2);
-    //  cropFace = new Mat(image, rect);
+   for (Rect rect : faceDetections.toArray())
+   {
+	  Imgproc.rectangle(image, new Point(rect.x, rect.y), 
+                        new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0), 2);
+      cropFace = new Mat(image, rect);
       
-  //  }
+   }
     
-    //HighGui.imshow("face", cropFace);
-    //HighGui.waitKey();
+    HighGui.imshow("face", cropFace);
+    HighGui.waitKey();
     //Imgproc.cvtColor(image, image, Imgproc.COLOR_GRAY2BGR);
-//    System.out.println("Image Channels: " + cropFace.channels());
-//    System.out.println("Image Size: " + cropFace.size());
-//    System.out.println("Image Type: " + cropFace.type());
-//    
+    System.out.println("Image Channels: " + cropFace.channels());
+    System.out.println("Image Size: " + cropFace.size());
+    System.out.println("Image Type: " + cropFace.type());
+
+    
     Resource user = new Resource();
     user.userEncode = cropFace;
-    user.firstName = "Jeff";
-    user.lastName = "Bezos";
+    user.firstName = "Carl";
+    user.lastName = "Negrescu";
     Resource updatedUser = new Resource();
     updatedUser.firstName = "Ben";
     updatedUser.lastName = "Pilande";
     updatedUser.userEncode = cropFace;
     
-    //dao.addUser(user);
+    dao.addUser(user);
     //dao.updateUser(user, updatedUser.firstName);
     listUsers = dao.getUsers();
     
-    face = listUsers.get(1);
-    //HighGui.imshow("Database Face",face.userEncode);   
-    //HighGui.waitKey();    
+    face = listUsers.get(0);
+    HighGui.imshow("Database Face",face.userEncode);   
+    HighGui.waitKey();    
     //dao.deleteUser(face.firstName);
     System.out.println("Image Channels: " + face.userEncode.channels());
     System.out.println("Image Size: " + face.userEncode.size());

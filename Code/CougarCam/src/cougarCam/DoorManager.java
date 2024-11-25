@@ -134,7 +134,14 @@ public class DoorManager implements Runnable
   {
     JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    frame.setSize(500, 400);
+    if (bgColor != Color.GREEN)
+    {
+    	frame.setSize(800, 600);
+    }
+    else
+    {	
+    	frame.setSize(500, 400);
+    }
     frame.setLayout(new BorderLayout());
     frame.getContentPane().setBackground(bgColor);
 
