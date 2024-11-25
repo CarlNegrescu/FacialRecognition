@@ -1,5 +1,5 @@
 /*
- * @brief helper class, creating an easy to use return types
+ * @brief helper class, creating an easy to use return types, and a grouping of variables for faces 
  * 
  * @author Carl Negrescu
  * @date 11/16/2024
@@ -26,6 +26,9 @@ public class Resource
 	    RESULT_INVALID_FORMAT,
 	    RESULT_INVALID_FILE_FORMAT,
 	    RESULT_UNABLE_TO_JOIN_THREAD,
+	    RESULT_JOINED_THREAD,
+	    RESULT_ALREADY_CLOSED,
+	    RESULT_ALREADY_OPEN,
 	    RESULT_USER_RECOGNIZED,
 	    RESULT_USER_NOT_RECOGNIZED
 	}
