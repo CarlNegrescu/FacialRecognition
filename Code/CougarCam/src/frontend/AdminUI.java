@@ -13,6 +13,7 @@ import java.awt.*;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.*;
@@ -60,16 +61,17 @@ public class AdminUI extends JFrame
 	private List<Resource> listUsers = new ArrayList<Resource>();
 	private boolean fileAdded = false;
 
-	public AdminUI(IDataAccess dao) {
+	public AdminUI(IDataAccess dao) 
+	{
 		_dao = dao;
 	}
 	//Frames
-	protected void addFrame() {
-
+	protected void addFrame() 
+	{
 		//Initialize Frame, Panel, and listener
 		addFrame = new JFrame("Add a user");
 		addFrame.setLayout(new BorderLayout());
-		addFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		addFrame.setLocationRelativeTo(null);
 
 		JPanel addPane1 = new JPanel();
@@ -115,117 +117,247 @@ public class AdminUI extends JFrame
 		addFrame.setSize(800,500);
 		addFrame.setVisible(true);
 	}
-	public void editFrame() {
-		//Initialize Frame, Panel, and listener
-		editFrame = new JFrame("Edit a user");
-		editFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		editFrame.setSize(300,250);
-		editFrame.setLocationRelativeTo(null);
-		editFrame.setVisible(true);
-		JPanel editPane = new JPanel();
-		String userNames[] = {};
-
-		listUsers = _dao.getUsers();
-
-		if(listUsers.get(0).validFace != null) {
-			for(int i = 0; i < listUsers.size(); i++) {
-				userNames[i] = listUsers.get(i).firstName;
-			}
-		}
-		else {
-			JOptionPane.showMessageDialog(new JFrame(), "No users to edit", "Error",JOptionPane.ERROR_MESSAGE);
-			editFrame.dispose();
-		}
-		//Initialize Contents
-		firstName = new JTextField(16);
-		lastName = new JTextField(16);
-		fileButton = new JButton("Choose a file");
-		JButton cancelEdit = new JButton("Cancel");
-		JButton confirmEdit = new JButton("Confirm");
-		JLabel firstNameLabel = new JLabel("First Name:");
-		JLabel lastNameLabel = new JLabel("Last Name:");
-		JList displayedUsers = new JList(userNames);
-
-		ListSelectionModel listSelectionModel = displayedUsers.getSelectionModel();
-
-		//add listeners
-		fileButton.addActionListener(e -> fileFrame());
-		cancelEdit.addActionListener(e->editFrame.dispose());
-		confirmEdit.addActionListener(e->editUser());
-
-		//add contents
-		editPane.add(firstNameLabel);
-		editPane.add(firstName);
-		editPane.add(lastNameLabel);
-		editPane.add(lastName);
-		editPane.add(fileButton);
-		editPane.add(displayedUsers);
-		editPane.add(cancelEdit);
-		editPane.add(confirmEdit);
-
-
-		editFrame.getContentPane().add(editPane);
-
-
-	}
+	
+	
 	public void deleteFrame() {
-		deleteFrame = new JFrame("Delete a user");
-		String userNames[] = {};
-		int userId[]= {};
+    // Initialize Frame
+    deleteFrame = new JFrame("Delete a User");
+    deleteFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    deleteFrame.setSize(500, 450);
+    deleteFrame.setLocationRelativeTo(null);
+    deleteFrame.setVisible(true);
 
-		deleteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		deleteFrame.setSize(300,250);
-		deleteFrame.setLocationRelativeTo(null);
-		deleteFrame.setVisible(true);
+    // Retrieve the user list
+    listUsers = _dao.getUsers();
+    
+    if (listUsers.isEmpty()) {
+        JOptionPane.showMessageDialog(deleteFrame, "No users to delete!", "Error", JOptionPane.ERROR_MESSAGE);
+        deleteFrame.dispose();
+        return;
+    }
 
-		listUsers = _dao.getUsers();
+    // Create panel
+    JPanel deletePane = new JPanel(new BorderLayout());
+    deletePane.setBackground(BACKGROUND_COLOR);
 
-		if(listUsers.get(0).validFace != false) {
-			for(int i = 0; i < listUsers.size(); i++) {
-				userNames[i] = listUsers.get(i).firstName;
-			}
-		}
-		else {
-			JOptionPane.showMessageDialog(new JFrame(), "No users to delete", "Error",JOptionPane.ERROR_MESSAGE);
-			deleteFrame.dispose();
-		}
-		JList displayedUsers = new JList(userNames);
-		displayedUsers.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if(!e.getValueIsAdjusting()){
-					user.firstName = (String)displayedUsers.getSelectedValue();
-					confirmDeleteFrame();
-				};
-			}
-		});
-		deleteFrame.add(displayedUsers);
+    // List of users to display
+    DefaultListModel<String> userListModel = new DefaultListModel<>();
+    for (Resource user : listUsers) {
+        userListModel.addElement(user.firstName + " " + user.lastName);
+    }
 
-	}
-	private void fileFrame() {
+    JList<String> displayedUsers = new JList<>(userListModel);
+    displayedUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    displayedUsers.setBackground(SECONDARY_COLOR);
+    displayedUsers.setForeground(TEXT_COLOR);
+    displayedUsers.setFont(new Font("Arial", Font.PLAIN, 16));
+
+    JScrollPane scrollPane = new JScrollPane(displayedUsers);
+    scrollPane.setPreferredSize(new Dimension(200, 150));
+
+    // Buttons
+    JButton confirmDelete = new JButton("Delete");
+    styleButton(confirmDelete);
+    confirmDelete.setEnabled(false); // Initially disabled
+
+    JButton cancelDelete = new JButton("Cancel");
+    styleButton(cancelDelete);
+    cancelDelete.addActionListener(e -> deleteFrame.dispose());
+
+    // Enable delete button only when a user is selected
+    displayedUsers.addListSelectionListener(e -> confirmDelete.setEnabled(!e.getValueIsAdjusting()));
+
+    // Confirm deletion and update database
+    confirmDelete.addActionListener(e -> {
+        int selectedIndex = displayedUsers.getSelectedIndex();
+        if (selectedIndex != -1) {
+            // Confirm before deletion
+            int option = JOptionPane.showConfirmDialog(deleteFrame, "Are you sure you want to delete this user?",
+                    "Delete Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+            if (option == JOptionPane.YES_OPTION) {
+                // Delete user from database
+                Resource selectedUser = listUsers.get(selectedIndex);
+                _dao.deleteUser(selectedUser.firstName);
+
+                // Update UI list
+                userListModel.remove(selectedIndex);
+
+                // Confirm success
+                JOptionPane.showMessageDialog(deleteFrame, "User deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                // Close frame if no users remain
+                if (userListModel.isEmpty()) {
+                    deleteFrame.dispose();
+                }
+            }
+        }
+    });
+
+    // Buttons panel
+    JPanel buttonPanel = new JPanel(new FlowLayout());
+    buttonPanel.setBackground(BACKGROUND_COLOR);
+    buttonPanel.add(confirmDelete);
+    buttonPanel.add(cancelDelete);
+
+    // Add components to deletePane
+    deletePane.add(scrollPane, BorderLayout.CENTER);
+    deletePane.add(buttonPanel, BorderLayout.SOUTH);
+
+    deleteFrame.add(deletePane);
+}
+
+	
+	public void editFrame() {
+    // Initialize Frame
+    editFrame = new JFrame("Edit a User");
+    editFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    editFrame.setSize(500, 450);
+    editFrame.setLocationRelativeTo(null);
+    listUsers = _dao.getUsers();
+    JPanel editPane = new JPanel(new BorderLayout());
+    editPane.setBackground(BACKGROUND_COLOR);
+
+    // List of users to display
+    DefaultListModel<String> userListModel = new DefaultListModel<>();
+    for (Resource user : listUsers) {
+        userListModel.addElement(user.firstName + " " + user.lastName);
+    }
+
+    JList<String> displayedUsers = new JList<>(userListModel);
+    displayedUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    displayedUsers.setBackground(SECONDARY_COLOR);
+    displayedUsers.setForeground(TEXT_COLOR);
+    displayedUsers.setFont(new Font("Arial", Font.PLAIN, 16));
+
+    JScrollPane scrollPane = new JScrollPane(displayedUsers);
+    scrollPane.setPreferredSize(new Dimension(200, 150));
+
+    JPanel formPanel = new JPanel();
+    formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+    formPanel.setBackground(BACKGROUND_COLOR);
+    formPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+    // Labels and Text Fields
+    JLabel firstNameLabel = new JLabel("First Name:");
+    firstNameLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Bold for readability
+    firstNameLabel.setForeground(new Color(230, 230, 230)); // Light text color
+    firstName = new JTextField(15); // Smaller text box
+
+    JLabel lastNameLabel = new JLabel("Last Name:");
+    lastNameLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Bold for readability
+    lastNameLabel.setForeground(new Color(230, 230, 230)); // Light text color
+    lastName = new JTextField(15); // Smaller text box
+
+    JButton fileButton = new JButton("Choose a New File");
+    styleButton(fileButton);
+    fileButton.addActionListener(e -> fileFrame());
+
+    JButton confirmEdit = new JButton("Confirm");
+    styleButton(confirmEdit);
+    confirmEdit.addActionListener(e -> {
+      int selectedIndex = displayedUsers.getSelectedIndex();
+      if (selectedIndex != -1) {
+          // Get the selected user
+          Resource selectedUser = listUsers.get(selectedIndex);
+
+          // Save the original first name for the WHERE clause in the query
+          String originalFirstName = selectedUser.firstName;
+
+          // Update the user object with new data
+          selectedUser.firstName = firstName.getText();
+          selectedUser.lastName = lastName.getText();
+          if (userImage != null) {
+              selectedUser.userEncode = userImage; // Update with the new image
+          }
+
+          // Update the database with the original first name as the key
+          _dao.updateUser(selectedUser, originalFirstName);
+
+          // Confirm success and refresh UI
+          JOptionPane.showMessageDialog(editFrame, "User updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+          // Update displayed user list to reflect changes
+          userListModel.set(selectedIndex, selectedUser.firstName + " " + selectedUser.lastName);
+
+          // Close the edit frame
+          editFrame.dispose();
+      } else {
+          JOptionPane.showMessageDialog(editFrame, "Please select a user to edit!", "Error", JOptionPane.ERROR_MESSAGE);
+      }
+  });
+
+    JButton cancelEdit = new JButton("Cancel");
+    styleButton(cancelEdit);
+    cancelEdit.addActionListener(e -> editFrame.dispose());
+
+    // Populate fields when a user is selected
+    displayedUsers.addListSelectionListener(e -> {
+        if (!e.getValueIsAdjusting() && displayedUsers.getSelectedIndex() != -1) {
+            int selectedIndex = displayedUsers.getSelectedIndex();
+            Resource selectedUser = listUsers.get(selectedIndex);
+            firstName.setText(selectedUser.firstName);
+            lastName.setText(selectedUser.lastName);
+        }
+    });
+
+    // Add components to form panel
+    formPanel.add(firstNameLabel);
+    formPanel.add(firstName);
+    formPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Spacing
+    formPanel.add(lastNameLabel);
+    formPanel.add(lastName);
+    formPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Spacing
+    formPanel.add(fileButton);
+
+    // Buttons panel
+    JPanel buttonPanel = new JPanel(new FlowLayout());
+    buttonPanel.setBackground(BACKGROUND_COLOR);
+    buttonPanel.add(confirmEdit);
+    buttonPanel.add(cancelEdit);
+
+    // Add everything to editPane
+    editPane.add(scrollPane, BorderLayout.WEST);
+    editPane.add(formPanel, BorderLayout.CENTER);
+    editPane.add(buttonPanel, BorderLayout.SOUTH);
+
+    editFrame.add(editPane);
+    editFrame.setVisible(true);
+}
+
+
+	private Resource.Result fileFrame() 
+	{
+	  Resource.Result result = Resource.Result.RESULT_OK;
 		//initialize filechooser
 		JFileChooser fileChooser = new JFileChooser();
-
-
 		//logic
 		int selection = fileChooser.showSaveDialog(null);
 		fileChooser.addChoosableFileFilter(new ImageFilter());
 		fileChooser.setAcceptAllFileFilterUsed(false);
 
-		if(selection== JFileChooser.APPROVE_OPTION) {
+		if(selection == JFileChooser.APPROVE_OPTION) 
+		{
 			File file = fileChooser.getSelectedFile();
-			if (file == null) {
+			
+			if (file == null) 
+			{
 				System.out.println("No file selected!");
+				result = Resource.Result.RESULT_INVALID_FILE;
 			}
-			else {
+			else 
+			{
 				saveFile(file);
 				fileAdded = true;
 			}
 
 		}
-		else {
+		else 
+		{
 			fileAdded = false;
+			result = Resource.Result.RESULT_FAILED;
 		}
+		return result;
 	}
 	private void confirmDeleteFrame() {
 		int option = JOptionPane.showConfirmDialog(addFrame, "Are you sure you want to delete this User?",
@@ -235,38 +367,42 @@ public class AdminUI extends JFrame
 	}
 
 	//Logic
-	private void addUser() {
-		if(fileAdded == true) {
+	private Resource.Result addUser() 
+	{
+	  Resource.Result result = Resource.Result.RESULT_OK;
+	  if(fileAdded == true) 
+		{
 			Resource newUser = new Resource();
 			newUser.firstName = firstName.getText();
 			newUser.lastName = lastName.getText();
 			newUser.userEncode = userImage;
-			_dao.addUser(newUser);
+			
+			result = _dao.addUser(newUser);
 			addFrame.dispose();
 			JOptionPane.showMessageDialog(null, "Added User Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
-		else {
+		else 
+		{
 			JOptionPane.showMessageDialog(new JFrame(), "Enter an Image", "Error",JOptionPane.ERROR_MESSAGE);
+			result = Resource.Result.RESULT_INVALID_FILE_FORMAT;
+			
 		}
+	  return result;
 	}
-	private void editUser() {
-		user.firstName = firstName.getText();
-		user.lastName = lastName.getText();
-		user.userEncode = userImage;
-		_dao.updateUser(user, user.firstName);
-
-	}
-	private void deleteUser() {
+	
+	private void deleteUser() 
+	{
 		_dao.deleteUser(user.firstName);
 	}
 	
-	private void saveFile(File file) {
+	private void saveFile(File file) 
+	{
 		CascadeClassifier _cascade = new CascadeClassifier("resources/haarcascades/haarcascade_frontalface_default.xml");
 		MatOfRect faceDetections = new MatOfRect();
 		String image = file.getAbsolutePath();
 		Mat userFace = new Mat();
 		Mat cropFace = null;
-		userFace= Imgcodecs.imread(image, Imgcodecs.IMREAD_COLOR);
+		userFace = Imgcodecs.imread(image, Imgcodecs.IMREAD_COLOR);
 		_cascade.detectMultiScale(userFace, faceDetections);
 
 		for (Rect rect : faceDetections.toArray())

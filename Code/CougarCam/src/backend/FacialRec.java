@@ -20,7 +20,7 @@ import backend.IDataAccess;
 public class FacialRec implements Runnable
 {
   private static final double COSINE_SIMILAR_THREASHOLD = 0.150; ///0.363
-  private static final double L2NORM_SIMILAR_THRESHOLD  = 1.128; ///1.128
+  private static final double L2NORM_SIMILAR_THRESHOLD  = 0.928; ///1.128
   private BlockingQueue<Mat> _faceQueue;
   private BlockingQueue<Resource> _completedQueue;
   private IDataAccess _dataObject;

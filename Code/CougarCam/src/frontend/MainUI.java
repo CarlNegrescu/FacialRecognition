@@ -30,6 +30,7 @@ public class MainUI {
     private JButton manageUsersBtn, logOutBtn, addUserBtn, editUserBtn, deleteUserBtn, cancelBtn;
     private DoorManager _dmanager;
     private IDataAccess _dao;
+    private AdminUI adminController;
 
     // Consistent color theme for the app
     private static final Color BACKGROUND_COLOR = new Color(188, 190, 212);  // White Background
@@ -40,6 +41,7 @@ public class MainUI {
 
     public MainUI(IDataAccess dao) {
         _dao = dao;
+        adminController = new AdminUI(_dao);
     }
 
     public void startApp() {
@@ -268,19 +270,16 @@ public class MainUI {
     /// User management actions
   private void addUser() {
       // Add user logic here
-	  AdminUI adminController = new AdminUI(_dao);
 	  adminController.addFrame();
   }
 
   private void editUser() {
       // Edit user logic here
-	  AdminUI adminController = new AdminUI(_dao);
 	  adminController.editFrame();
   }
 
   private void deleteUser() {
       // Delete user logic here
-	  AdminUI adminController = new AdminUI(_dao);
 	  adminController.deleteFrame();
   }
 
