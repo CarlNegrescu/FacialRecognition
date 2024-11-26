@@ -124,9 +124,7 @@ public class AdminUI extends JFrame
 		editFrame.setVisible(true);
 		JPanel editPane = new JPanel();
 		String userNames[] = {};
-
-		listUsers = _dao.getUsers();
-
+		
 		if(listUsers.get(0).validFace != null) {
 			for(int i = 0; i < listUsers.size(); i++) {
 				userNames[i] = listUsers.get(i).firstName;
