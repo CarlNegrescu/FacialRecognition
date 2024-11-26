@@ -118,7 +118,6 @@ public class AdminUI extends JFrame
 		addFrame.setVisible(true);
 	}
 	
-	
 	public void deleteFrame() {
     // Initialize Frame
     deleteFrame = new JFrame("Delete a User");
