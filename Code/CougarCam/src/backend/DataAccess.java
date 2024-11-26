@@ -179,7 +179,6 @@ public class DataAccess implements IDataAccess
   public List<Resource> getUsers()
   {
     List<Resource> listUsers = new ArrayList<Resource>();
-    
     SerializedMat smat = new SerializedMat();
     try 
     {
