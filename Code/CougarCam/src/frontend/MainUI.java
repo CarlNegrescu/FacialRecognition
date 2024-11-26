@@ -11,10 +11,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import backend.IDataAccess;
 import backend.TestDataAccess;
+import frontend.AdminUI;
 import cougarCam.DoorManager;
 import utils.Resource;
 
@@ -27,16 +30,18 @@ public class MainUI {
     private JButton manageUsersBtn, logOutBtn, addUserBtn, editUserBtn, deleteUserBtn, cancelBtn;
     private DoorManager _dmanager;
     private IDataAccess _dao;
+    private AdminUI adminController;
 
     // Consistent color theme for the app
-    private static final Color BACKGROUND_COLOR = new Color(169, 169, 169);  // Gray Background
-    private static final Color BUTTON_COLOR = new Color(0, 0, 128);     // Orange
-    private static final Color BUTTON_HOVER_COLOR = new Color(0, 0, 128);  // Tomato red
+    private static final Color BACKGROUND_COLOR = new Color(188, 190, 212);  // White Background
+    private static final Color BUTTON_COLOR = new Color(188, 190, 212);     // University Blue
+    private static final Color BUTTON_HOVER_COLOR = new Color(209, 211, 212);  // Cougar Blue
     private static final Color SECONDARY_COLOR = new Color(30, 144, 255);  // Light Blue
-    private static final Color TEXT_COLOR = Color.WHITE;
+    private static final Color TEXT_COLOR = new Color(0, 46, 90);
 
     public MainUI(IDataAccess dao) {
         _dao = dao;
+        adminController = new AdminUI(_dao);
     }
 
     public void startApp() {
@@ -68,6 +73,7 @@ public class MainUI {
     // Create login panel with consistent theme
     private JPanel createLoginPanel() {
         JPanel panel = new JPanel();
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(BACKGROUND_COLOR);
 
@@ -113,6 +119,7 @@ public class MainUI {
     // Create admin panel with consistent theme
     private JPanel createAdminPanel() {
         JPanel panel = new JPanel();
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(BACKGROUND_COLOR);
 
@@ -147,6 +154,7 @@ public class MainUI {
     // Create manage users panel with consistent theme
     private JPanel createManageUsersPanel() {
         JPanel panel = new JPanel();
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(BACKGROUND_COLOR);
 
@@ -185,7 +193,7 @@ public class MainUI {
     }
 
     // Method to style buttons consistently
-    private void styleButton(JButton button) {
+    public void styleButton(JButton button) {
         button.setFont(new Font("Arial", Font.BOLD, 16));
         button.setForeground(TEXT_COLOR);
         button.setBackground(BUTTON_COLOR);
@@ -262,110 +270,17 @@ public class MainUI {
     /// User management actions
   private void addUser() {
       // Add user logic here
+	  adminController.addFrame();
   }
 
   private void editUser() {
       // Edit user logic here
+	  adminController.editFrame();
   }
 
   private void deleteUser() {
       // Delete user logic here
+	  adminController.deleteFrame();
   }
 
 }
-
-/*
-public class MainUI
-{
-
-  private JLabel Welcome;
-  public JButton login;
-  public JButton startFrontDoorCam;
-  public JButton stopFrontDoorCam;
-  private JFrame StartFrame;
-  JPanel tidy;
-  DoorManager _dmanager;
-  IDataAccess _dao;
-  
-  public MainUI(IDataAccess dao)
-  {
-    _dao = dao;
-   
-  }
-  
-  public void startApp() 
-  {
-    ButtonListener listener = new ButtonListener();
-    tidy = new JPanel();
-    FlowLayout layout = new FlowLayout();
-    
-    tidy.setLayout(layout);
-    
-    // Create a new JFrame
-    StartFrame = new JFrame("Cougar Camera");
-
-    login = new JButton("Log In");
-    startFrontDoorCam = new JButton("Start Front Door Camera");
-    stopFrontDoorCam = new JButton("Stop Front Door Camera");
-    stopFrontDoorCam.addActionListener(listener);
-    login.addActionListener(listener);
-    startFrontDoorCam.addActionListener(listener);
-
-    Welcome = new JLabel("Welcome to Cougar Camera");
-    
-    tidy.add(Welcome);
-    tidy.add(login);
-    tidy.add(startFrontDoorCam);
-    tidy.add(stopFrontDoorCam);
-    StartFrame.add(tidy);
-    
-    
-     //Set frame properties
-    StartFrame.setSize(800, 500);  //Set the size of the frame
-    StartFrame.pack();
-    // Close operation
-    StartFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-     //Make the frame visible
-    StartFrame.setVisible(true);
-  }
-  
-  public void setMainFrameVisible(Boolean option)
-  {
-    StartFrame.setVisible(option);
-  }
-  
-  class ButtonListener implements ActionListener
-  {
-
-    @Override
-    public void actionPerformed(ActionEvent e) 
-    {
-       //TODO Auto-generated method stub
-      JButton clickedButton = (JButton) e.getSource();
-      if (clickedButton == login) 
-      {
-        
-      } 
-      
-      else if (clickedButton == startFrontDoorCam) 
-      {
-        //starts system
-        System.out.println("Start pressed");
-        System.out.println("Starting Camera");
-        _dmanager = new DoorManager(_dao);
-        _dmanager.startDoorManager();
-      }
-      
-      else if(clickedButton == stopFrontDoorCam)
-      {
-        System.out.println("Stop pressed");
-        System.out.println("Stoping Camera");
-        _dmanager.stopDoorManager();
-        
-        
-      }
-    }
-  }
-}
-*/

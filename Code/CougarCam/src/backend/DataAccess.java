@@ -206,32 +206,4 @@ public class DataAccess implements IDataAccess
     System.out.println(listUsers);
     return listUsers;
   }
-
-  private byte[] convertToByte(Mat face)
-  {
-    MatOfByte matbyte = new MatOfByte();
-    Imgcodecs.imencode(".byte", face, matbyte);
-    byte[] byteArray = matbyte.toArray(); 
-//    
-//    int size = (int)(face.total() * face.elemSize());
-//    byte[] byteArray = new byte[size];
-//    face.get(0,0, byteArray);
-//    
-    return byteArray;
-  }
-  
-  private Mat convertToMat(byte[] byteArray) throws Exception
-  {
-	  Mat face = new Mat(1, byteArray.length, CvType.CV_32F);
-	  face = Imgcodecs.imdecode(new MatOfByte(byteArray), Imgcodecs.IMREAD_UNCHANGED);
-//	  BufferedImage img;
-//	  img = ImageIO.read(new ByteArrayInputStream(byteArray));
-//	  Mat mat = new Mat(img.getHeight(), img.getWidth(), CvType.CV_8UC3);
-//	  mat.put(0, 0, ((DataBufferByte) img.getRaster().getDataBuffer()).getData());
-	  return face;
-  }
-  
-  
-  
-  
 }

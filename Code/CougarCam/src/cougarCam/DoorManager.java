@@ -155,45 +155,6 @@ public class DoorManager implements Runnable
     new Timer(3000, e -> frame.dispose()).start();
     return;
   }
-  //  private void displayMessage(Resource result) throws InterruptedException
-  //  {
-  //	if(_validFace >= 5 || _nonValidFace >= 30)
-  //	{
-  //		if (_validFace >= 5 && result.validFace)
-  //		{
-  //			_validFace = 0;
-  //			_nonValidFace = 0;
-  //			System.out.println("User Recognized");
-  //			System.out.printf("%n%n%n");
-  //			System.out.println("WELCOME " + result.firstName + " " + result.lastName);
-  //			System.out.printf("%n%n%n");
-  //			stopDoorManager();
-  //		}
-  //		else if (_nonValidFace >= 30)
-  //		{
-  //			_nonValidFace = 0;
-  //			_validFace = 0;
-  //			System.out.printf("%n%n%n");
-  //			System.out.println("USER NOT RECOGNIZED! ENTRY NOT PERMITTED");
-  //			System.out.printf("%n%n%n");
-  //			stopDoorManager();
-  //		}
-  //	}
-  //	else
-  //	{
-  //	    if (result.validFace)
-  //	    {
-  //	      System.out.println("Adding to ValidFace Counter, current count: " + _validFace);
-  //	      _validFace++;
-  //	    }
-  //	    else
-  //	    {
-  //	      System.out.println("Adding to NONValidFace Counter, current count: " + _nonValidFace);
-  //	      _nonValidFace++;
-  //	    }
-  //	}
-  //  }
-
 
   /*
    * @brief point of entry of the thread, responsible of managing the output of the facialRecognition object
