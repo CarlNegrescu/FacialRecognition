@@ -1,3 +1,10 @@
+/**
+ * @brief Main Ui class for creates the main Jframe and handles the different pages, and access the front door program
+ * 
+ * @authors Carl Negrescu, Ben Pilande 
+ * 
+ * @date 11/25/24
+ */
 package frontend;
 
 import java.awt.*;
@@ -21,7 +28,8 @@ import frontend.AdminUI;
 import cougarCam.DoorManager;
 import utils.Resource;
 
-public class MainUI {
+public class MainUI 
+{
 
     private JFrame StartFrame;
     private JPanel loginPanel, adminPanel, manageUsersPanel;
@@ -33,18 +41,22 @@ public class MainUI {
     private AdminUI adminController;
 
     // Consistent color theme for the app
-    private static final Color BACKGROUND_COLOR = new Color(188, 190, 212);  // White Background
-    private static final Color BUTTON_COLOR = new Color(188, 190, 212);     // University Blue
-    private static final Color BUTTON_HOVER_COLOR = new Color(209, 211, 212);  // Cougar Blue
-    private static final Color SECONDARY_COLOR = new Color(30, 144, 255);  // Light Blue
-    private static final Color TEXT_COLOR = new Color(0, 46, 90);
+    private static final Color BACKGROUND_COLOR     = new Color(188, 190, 212);  // White Background
+    private static final Color BUTTON_COLOR         = new Color(188, 190, 212);     // University Blue
+    private static final Color BUTTON_HOVER_COLOR   = new Color(209, 211, 212);  // Cougar Blue
+    private static final Color SECONDARY_COLOR      = new Color(30, 144, 255);  // Light Blue
+    private static final Color TEXT_COLOR           = new Color(0, 46, 90);
+    private static final String LOGIN               = "admin";
+    private static final String PASSWORD            = "password";
 
-    public MainUI(IDataAccess dao) {
+    public MainUI(IDataAccess dao) 
+    {
         _dao = dao;
         adminController = new AdminUI(_dao);
     }
 
-    public void startApp() {
+    public void startApp() 
+    {
         // Initialize the main frame and CardLayout
         StartFrame = new JFrame("Cougar Camera");
         cardLayout = new CardLayout();
@@ -71,7 +83,8 @@ public class MainUI {
     }
 
     // Create login panel with consistent theme
-    private JPanel createLoginPanel() {
+    private JPanel createLoginPanel() 
+    {
         JPanel panel = new JPanel();
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -117,7 +130,8 @@ public class MainUI {
     }
 
     // Create admin panel with consistent theme
-    private JPanel createAdminPanel() {
+    private JPanel createAdminPanel() 
+    {
         JPanel panel = new JPanel();
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -152,7 +166,8 @@ public class MainUI {
     }
 
     // Create manage users panel with consistent theme
-    private JPanel createManageUsersPanel() {
+    private JPanel createManageUsersPanel() 
+    {
         JPanel panel = new JPanel();
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -193,7 +208,8 @@ public class MainUI {
     }
 
     // Method to style buttons consistently
-    public void styleButton(JButton button) {
+    public void styleButton(JButton button) 
+    {
         button.setFont(new Font("Arial", Font.BOLD, 16));
         button.setForeground(TEXT_COLOR);
         button.setBackground(BUTTON_COLOR);
@@ -213,7 +229,8 @@ public class MainUI {
     }
 
     // Show login dialog
-    private void showLoginDialog() {
+    private void showLoginDialog() 
+    {
         JTextField usernameField = new JTextField(20);
         JPasswordField passwordField = new JPasswordField(20);
         Object[] message = {
@@ -236,9 +253,9 @@ public class MainUI {
         }
     }
 
-    // Dummy method to validate login credentials (you can modify this for actual authentication)
-    private boolean validateLogin(String username, String password) {
-        return username.equals("ad") && password.equals("pass");
+    private boolean validateLogin(String username, String password) 
+    {
+        return username.equals(LOGIN) && password.equals(PASSWORD);
     }
 
     // Admin actions

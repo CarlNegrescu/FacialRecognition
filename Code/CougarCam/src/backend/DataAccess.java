@@ -1,4 +1,4 @@
-/*
+/**
  * @brief DataBase Access Object, to Update, Add, Delete rows, and return whole tables
  * 
  * @author Carl Negrescu
@@ -56,10 +56,12 @@ public class DataAccess implements IDataAccess
 
   }
 
-  /*
+  /**
    * @brief Adds a user to the database
    * 
    * @param Resource object with all the users details 
+   * 
+   * @return Result indicating the success of the operation 
    */
   public Resource.Result addUser(Resource inputUser)
   {
@@ -87,7 +89,14 @@ public class DataAccess implements IDataAccess
 
     return result;
   }
-
+  
+  /**
+   * @brief deletes a user in the database, indexes through the users first name 
+   * 
+   * @param String FirstName, user to delete
+   * 
+   * @return Result indicating the success of the operation
+   */
   public Resource.Result deleteUser(String firstName) 
   {
     Resource.Result result = Resource.Result.RESULT_OK;
@@ -115,7 +124,14 @@ public class DataAccess implements IDataAccess
     }
     return result;
   }
-
+  
+  /**
+   * @brief updates a user in the database, uses the users first name to find the user in the database 
+   * 
+   * @param Resource Object, String FirstName, object to replace in the database, firstname of the user to update. 
+   * 
+   * @return Result indicating the success of the operation 
+   */
   public Resource.Result updateUser(Resource inputUser, String firstName) 
   {
     Resource.Result result = Resource.Result.RESULT_OK;
@@ -143,7 +159,8 @@ public class DataAccess implements IDataAccess
     return result;
   }
 
-  /* @brief Takes in the User ID and returns the User's name
+  /** 
+   * @brief Takes in the User ID and returns the User's name
    * 
    * @param int id
    * 
@@ -170,7 +187,7 @@ public class DataAccess implements IDataAccess
     return user;
   }
 
-  /*
+  /**
    * @brief gets all the users in the database and returns it in a Array list
    * 
    * @return List of Mat objects 

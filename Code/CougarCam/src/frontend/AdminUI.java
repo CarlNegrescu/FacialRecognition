@@ -1,4 +1,10 @@
-
+/**
+ * @brief Admin options for editing the database 
+ * 
+ * @author Ben Pilande, Carl Negrescu
+ * 
+ * @date 11/25/24
+ */
 package frontend;
 
 import java.awt.image.BufferedImage;

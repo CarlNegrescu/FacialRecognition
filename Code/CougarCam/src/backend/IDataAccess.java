@@ -1,4 +1,4 @@
-/*
+/**
  * @brief interface class of the data access logic
  * 
  * @author Carl Negrescu
@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface IDataAccess 
 {
-  /*
+  /**
    * @brief Adds a user to the database
    * 
    * @param Resource object with all the users details 

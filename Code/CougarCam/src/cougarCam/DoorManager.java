@@ -1,4 +1,4 @@
-/*
+/**
  * @brief Manager Class of the CameraModule and the Facial Recognition class
  * 
  * @author Carl Negrescu
@@ -41,8 +41,10 @@ public class DoorManager implements Runnable
   private int 			_validFace;
   private int 			_nonValidFace;
 
-  /*
+  /**
    * @brief Constructor creates the camera and facial Recognition objects
+   * 
+   * @param DataAccess Object indicating which database to use
    * 
    */
   public DoorManager(IDataAccess dao)
@@ -58,13 +60,20 @@ public class DoorManager implements Runnable
     _nonValidFace = 0;
   }
 
-  /// @brief starts the doorManager thread
+  /**
+   *  @brief starts the doorManager thread
+   */
   public void startDoorManager()
   {
     _doorThread = new Thread(this, "DoorManager");
     _doorThread.start();
   }
-
+  
+  /**
+   * @brief stops the doorManager Thread 
+   * 
+   * @return Result indicating the success of the operation
+   */
   public Resource.Result stopDoorManager()
   {
     Resource.Result result = Resource.Result.RESULT_OK;
@@ -97,6 +106,15 @@ public class DoorManager implements Runnable
 
     return result;
   }
+  
+  /**
+   * @brief To combat the sometimes the poor recognition displayMessage waits until there are 5 valid faces in a session to determine if the user is recognized, 
+   *        or 30 invalid faces if the user is not recognized.
+   *        
+   * @param Resource object contains the users information and if it is recognized.
+   * 
+   * @return none 
+   */
   private void displayMessage(Resource result) throws InterruptedException
   {
     if (_validFace >= 5 || _nonValidFace >= 30) 
@@ -130,18 +148,21 @@ public class DoorManager implements Runnable
       }
     }
   }
+  
+  /**
+   * @brief helper class that does the pop up implementation for (un)recognized users 
+   */
   private void showPopup(String message, Color bgColor) 
   {
     JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    
     if (bgColor != Color.GREEN)
-    {
     	frame.setSize(800, 600);
-    }
+    
     else
-    {	
     	frame.setSize(500, 400);
-    }
+    
     frame.setLayout(new BorderLayout());
     frame.getContentPane().setBackground(bgColor);
 
@@ -156,7 +177,7 @@ public class DoorManager implements Runnable
     return;
   }
 
-  /*
+  /**
    * @brief point of entry of the thread, responsible of managing the output of the facialRecognition object
    */
   @Override
@@ -176,10 +197,13 @@ public class DoorManager implements Runnable
       {
         e.printStackTrace();
       }
-      try {
+      try 
+      {
         displayMessage(_result);
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
+      } 
+      catch (InterruptedException e) 
+      {
+        
         e.printStackTrace();
       }
     }

@@ -1,4 +1,4 @@
-/*
+/**
  *  @brief Seralization and deseralization helper class to convert mat objects for entry and exit from the database
  *  
  *  @date 11/20/2024
@@ -10,10 +10,10 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 
-///< Taken from Stackoverflow
+
 public class SerializeData 
 {
-  /*
+  /**
    * @brief Takes in a SerializedMat Object to convert into a Mat Object
    * 
    * @param SerializedMat object
@@ -27,7 +27,7 @@ public class SerializeData
     if (byteArray == null || byteArray.length == 0) 
     {
       System.err.println("Cannot deserialize: byte array is null or empty.");
-      return new Mat(); // Return an empty Mat to avoid further errors
+      return new Mat();
     }
 
     Mat decodedMat = Imgcodecs.imdecode(new MatOfByte(byteArray), Imgcodecs.IMREAD_UNCHANGED);///< Decoding the byte array into a Mat object
@@ -43,7 +43,7 @@ public class SerializeData
     return decodedMat;
   }
 
-  /*
+  /**
    * @brief Serializes a Mat object into a SerializedMat Object
    * 
    * @param Mat Object
@@ -74,7 +74,7 @@ public class SerializeData
   }
 
   
-  /*
+  /**
    * @brief Helper class to easily manage the byte array to send to the DataBase
    *  Identifies the type of integer in the Mat array and correctly stores it. 
    */
