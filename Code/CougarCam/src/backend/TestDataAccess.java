@@ -1,18 +1,21 @@
+/**
+ * @brief testing dataAccess class when implementation of the database is not yet completed, or to ensure problems do not arise from data access
+ * 
+ * @author Carl Negrescu
+ * 
+ * @date 11/16/24
+ */
 package backend;
 
 import utils.Resource;
-import org.opencv.imgcodecs.*;
-
 import java.util.ArrayList;
 import java.util.List;
-import org.opencv.core.*;
 
 public class TestDataAccess implements IDataAccess
 {
-  
  private List<Resource> users = new ArrayList<Resource>();
  
- /// Tester adder method, 
+ /// Test adder method, 
  public Resource.Result addUser(Resource inputUser)
  {
    users.add(inputUser);

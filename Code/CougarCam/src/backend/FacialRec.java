@@ -1,4 +1,4 @@
-/*
+/**
  * @brief Facial Recognition Class, responisble for taking in faces from the message queue and 
  * accessing the database to find any matching faces
  * 
@@ -21,7 +21,7 @@ import backend.IDataAccess;
 public class FacialRec implements Runnable
 {
   private static final double COSINE_SIMILAR_THREASHOLD = 0.150; ///0.363 /// Good camera is required ! Otherwise lower the threshold
-  private static final double L2NORM_SIMILAR_THRESHOLD  = .928; ///1.128
+  private static final double L2NORM_SIMILAR_THRESHOLD  = .728; ///1.128
   private BlockingQueue<Mat> _faceQueue;
   private BlockingQueue<Resource> _completedQueue;
   private IDataAccess _dataObject;
@@ -49,7 +49,7 @@ public class FacialRec implements Runnable
       try
       {
         inputFace = _faceQueue.take();
-        _completedQueue.put(recognizeFace(inputFace)); /// Here is the final average Mat
+        _completedQueue.put(recognizeFace(inputFace));
         System.out.println("IN FACIAL REC");
       }
       catch (InterruptedException e)
@@ -59,7 +59,15 @@ public class FacialRec implements Runnable
       }
     }
   }
-  
+  /**
+   * @brief Takes in a Mat Object from the Detection Queue, then gets all the faces from the database,
+   * which then goes through the faces in the database and returns the user with the best match, 
+   * or null user is there is no matching face in the database 
+   * 
+   * @param Mat Object of the users face to recognize
+   * 
+   * @return Resource Object that contains the persons name and their facial encoding, and enum stating success of recognition. 
+   */
   private Resource recognizeFace(Mat face)
   {
     Resource result             = new Resource();
@@ -77,8 +85,6 @@ public class FacialRec implements Runnable
     while (iter.hasNext())
     {
       dataBaseResource = iter.next();
-//      grayToColorMat = dataBaseResource.userEncode;
-//      Imgproc.cvtColor(grayToColorMat, grayToColorMat, Imgproc.COLOR_GRAY2BGR);
       faceRecognizer.feature(dataBaseResource.userEncode, faceDBFeatures);
       faceDBFeatures = faceDBFeatures.clone();
       ///<getting the cosine similarity

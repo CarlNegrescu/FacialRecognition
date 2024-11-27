@@ -1,4 +1,4 @@
-/*
+/**
  * @brief helper class, creating an easy to use return types, and a grouping of variables for faces 
  * 
  * @author Carl Negrescu
@@ -9,12 +9,12 @@ import org.opencv.core.*;
 
 public class Resource 
 {
-  public String firstName;
-  public String lastName;
-  public Boolean validFace;
-  public int id;
-  public Result user;
-  public Mat userEncode;
+  public String   firstName;
+  public String   lastName;
+  public Boolean  validFace;
+  public int      id;
+  public Result   user;
+  public Mat      userEncode;
   
 	public enum Result
 	{

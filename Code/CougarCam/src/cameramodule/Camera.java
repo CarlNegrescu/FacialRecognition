@@ -1,4 +1,4 @@
-/*
+/**
  * @brief Camera implementation class, opens the camera, detects face in the frame, sends cropped Face vector to Facial Recognition
  * 
  * @author Carl Negrescu
@@ -17,6 +17,7 @@ import java.util.concurrent.*;
 
 public class Camera implements Runnable
 {
+  
   private final Object lock;
   private VideoCapture _camera;
   private Mat _frame;
@@ -27,9 +28,7 @@ public class Camera implements Runnable
   private BlockingQueue<Mat> _faceQueue;
   private Thread cameraThread;
   private Boolean isRunning = false;
-  
-  
-  
+ 
   /**
    * @brief Creates a Camera object
    * @param index the Camera index, the default is 0
@@ -47,7 +46,7 @@ public class Camera implements Runnable
 
   /**
    * @brief implements the java thread library function
-   *        And will open and start detecting faces in the frame, when that happens it will send that to facial recognition for processing
+   *        And will open and start detecting faces in the frame, then will send to facial recognition for processing
    */
   @Override
   public void run()
@@ -80,7 +79,7 @@ public class Camera implements Runnable
   /**
    * @brief Starts the thread running the camera module
 
-   * @return none
+   * @return Result indicating the success of the operation 
    */
  public Resource.Result openCamera(VideoCapture camera)
   {
@@ -100,6 +99,11 @@ public class Camera implements Runnable
    return result;
   }
 
+ /**
+  * @brief stops the camera thread
+  * 
+  * @return Result indicating the success of the operation 
+  */
   public Resource.Result closeCamera()
   {
     Resource.Result result = Resource.Result.RESULT_OK;
@@ -131,6 +135,13 @@ public class Camera implements Runnable
     return result;
   }
   
+  /**
+   * @brief Helper function to put Mat Objects in the queue
+   * 
+   * @param Mat Object for processing
+   * 
+   * @return none
+   */
   private void processFaceForRecognition(Mat face)
   {
     try
@@ -145,6 +156,11 @@ public class Camera implements Runnable
     }
   }
   
+  /**
+   * @brief Helper function to release the camera and frame resources
+   * 
+   * @return none 
+   */
   private void releaseResources() 
   {
 	if (_camera != null && _camera.isOpened()) 
