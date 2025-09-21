@@ -1,7 +1,10 @@
 /**
- * @brief Facial Recognition Class, responisble for taking in faces from the message queue and 
- * accessing the database to find any matching faces
- * 
+ * @brief Handles the core facial recognition logic.
+ * <p>
+ * This class runs on a separate thread, taking detected face images (as {@link Mat} objects)
+ * from a blocking queue. It uses the OpenCV {@link FaceRecognizerSF} model to compare
+ * the input face against all user faces stored in the database.
+ *
  * @author Carl Negrescu
  * @date 11/16/2024
  */
@@ -31,6 +34,13 @@ public class FacialRec implements Runnable
   private Mat inputFace;
   private List<Resource> users;
   
+  /**
+   * Constructs the FacialRec instance.
+   *
+   * @param faceQueue      The queue from which to take detected face images.
+   * @param completedQueue The queue to put recognition results into.
+   * @param dataObject     The DAO for accessing user data from the database.
+   */
   public FacialRec(BlockingQueue<Mat> faceQueue, BlockingQueue<Resource> completedQueue, IDataAccess dataObject)
   {
     System.out.println("In FacialRec Constructor");
@@ -40,6 +50,11 @@ public class FacialRec implements Runnable
     faceRecognizer  = FaceRecognizerSF.create("resources/face_recognition_sface_2021dec.onnx", "");
   }
   
+  /**
+   * The main execution loop for the facial recognition thread.
+   * It continuously takes faces from the {@code _faceQueue}, recognizes them,
+   * and places the result in the {@code _completedQueue}.
+   */
   @Override
   public void run(  )
   {
@@ -60,13 +75,14 @@ public class FacialRec implements Runnable
     }
   }
   /**
-   * @brief Takes in a Mat Object from the Detection Queue, then gets all the faces from the database,
-   * which then goes through the faces in the database and returns the user with the best match, 
-   * or null user is there is no matching face in the database 
-   * 
-   * @param Mat Object of the users face to recognize
-   * 
-   * @return Resource Object that contains the persons name and their facial encoding, and enum stating success of recognition. 
+   * Compares a given face against all users in the database.
+   * <p>
+   * It extracts the facial features from the input face and iterates through all database users,
+   * calculating the cosine similarity and L2 norm distance. If a match is found that exceeds
+   * the defined thresholds, it returns a {@link Resource} object with the user's details.
+   *
+   * @param face A {@link Mat} object of the cropped face to be recognized.
+   * @return A {@link Resource} object containing the recognition result.
    */
   private Resource recognizeFace(Mat face)
   {
@@ -120,12 +136,20 @@ public class FacialRec implements Runnable
     return result;
   }
   
+  /**
+   * Starts the facial recognition thread.
+   */
   public void startFacialRec()
   {
     facRecThread = new Thread(this, "Facial Thread");
     facRecThread.start();
   }
   
+  /**
+   * Stops the facial recognition thread gracefully.
+   *
+   * @return A {@link Resource.Result} indicating the outcome of the shutdown.
+   */
   public Resource.Result stopFacialRec()
   {
     Resource.Result result = Resource.Result.RESULT_OK;

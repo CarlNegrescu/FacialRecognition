@@ -1,8 +1,12 @@
 /**
- *  @brief Seralization and deseralization helper class to convert mat objects for entry and exit from the database
- *  
- *  @date 11/20/2024
- *  @author Carl Negrescu
+ * @brief A utility class for serializing and deserializing OpenCV {@link Mat} objects.
+ * <p>
+ * This class provides static methods to convert a {@code Mat} object, which represents
+ * an image or facial encoding, into a byte array for storage in a database BLOB field,
+ * and to convert it back into a {@code Mat} object upon retrieval.
+ *
+ * @author Carl Negrescu
+ * @date 11/20/2024
  */
 package backend;
 
@@ -14,11 +18,10 @@ import org.opencv.imgcodecs.Imgcodecs;
 public class SerializeData 
 {
   /**
-   * @brief Takes in a SerializedMat Object to convert into a Mat Object
-   * 
-   * @param SerializedMat object
-   * 
-   * @return Mat Object of user's facial encodings
+   * Deserializes a byte array from a {@link SerializedMat} object back into an OpenCV {@link Mat} object.
+   *
+   * @param smat The {@link SerializedMat} container holding the byte array.
+   * @return A {@link Mat} object representing the decoded image or feature vector.
    */
   public static Mat DeserializeToMat(SerializedMat smat) 
   {
@@ -44,11 +47,11 @@ public class SerializeData
   }
 
   /**
-   * @brief Serializes a Mat object into a SerializedMat Object
-   * 
-   * @param Mat Object
-   * 
-   * @return SerializedMat Object
+   * Serializes an OpenCV {@link Mat} object into a {@link SerializedMat} object.
+   * The Mat is encoded into a JPEG format byte array.
+   *
+   * @param mat The {@link Mat} object to be serialized.
+   * @return A {@link SerializedMat} object containing the resulting byte array.
    */
   public SerializedMat serializeFromMat(Mat mat) 
   {
@@ -75,20 +78,22 @@ public class SerializeData
 
   
   /**
-   * @brief Helper class to easily manage the byte array to send to the DataBase
-   *  Identifies the type of integer in the Mat array and correctly stores it. 
+   * @brief A static nested class that acts as a data container for a serialized {@link Mat}.
+   * <p>
+   * This class is designed to hold the byte array representation of a Mat object,
+   * along with its original metadata (rows, columns, type), though the current
+   * implementation primarily relies on the byte array from {@code Imgcodecs.imencode}.
    */
   public static class SerializedMat
   {
-    byte[] bytes;
-    short[] shorts;
-    int[] ints;
-    float[] floats;
-    double[] doubles;
-
-    int type;
-    int rows;
-    int cols;
+    byte[]    bytes;
+    short[]   shorts;
+    int[]     ints;
+    float[]   floats;
+    double[]  doubles;
+    int       type;
+    int       rows;
+    int       cols;
 
     byte[] getBytes()
     {

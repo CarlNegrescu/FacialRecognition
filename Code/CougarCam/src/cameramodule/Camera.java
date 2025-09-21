@@ -1,6 +1,11 @@
 /**
- * @brief Camera implementation class, opens the camera, detects face in the frame, sends cropped Face vector to Facial Recognition
- * 
+ * @brief Manages all camera operations, including video capture and face detection.
+ * <p>
+ * This class runs on a dedicated thread to continuously read frames from a webcam.
+ * For each frame, it uses an OpenCV {@link CascadeClassifier} to detect faces.
+ * Any detected faces are cropped and placed into a {@link BlockingQueue} for the
+ * facial recognition module to process.
+ *
  * @author Carl Negrescu
  * @date 11/15/2024
  */
@@ -18,16 +23,16 @@ import java.util.concurrent.*;
 public class Camera implements Runnable
 {
   
-  private final Object lock;
-  private VideoCapture _camera;
-  private Mat _frame;
-  private boolean cont = true;
-  private CascadeClassifier _cascade;
-  private MatOfRect _faceDetections;
-  private Mat _cropFace;
-  private BlockingQueue<Mat> _faceQueue;
-  private Thread cameraThread;
-  private Boolean isRunning = false;
+  private final Object        lock;
+  private VideoCapture        _camera;
+  private Mat                 _frame;
+  private boolean             cont = true;
+  private CascadeClassifier   _cascade;
+  private MatOfRect           _faceDetections;
+  private Mat                 _cropFace;
+  private BlockingQueue<Mat>  _faceQueue;
+  private Thread              cameraThread;
+  private Boolean             isRunning = false;
  
   /**
    * @brief Creates a Camera object
@@ -45,8 +50,11 @@ public class Camera implements Runnable
   }
 
   /**
-   * @brief implements the java thread library function
-   *        And will open and start detecting faces in the frame, then will send to facial recognition for processing
+   * The main execution loop for the camera thread.
+   * <p>
+   * Continuously reads frames from the camera, performs face detection,
+   * displays the video feed with detected faces highlighted, and sends
+   * cropped faces to the recognition queue.
    */
   @Override
   public void run()
@@ -77,9 +85,10 @@ public class Camera implements Runnable
   }
 
   /**
-   * @brief Starts the thread running the camera module
-
-   * @return Result indicating the success of the operation 
+   * Starts the camera thread to begin capturing video.
+   *
+   * @param camera The {@link VideoCapture} object to use for reading frames.
+   * @return A {@link Resource.Result} indicating the outcome of the operation.
    */
  public Resource.Result openCamera(VideoCapture camera)
   {
@@ -100,9 +109,9 @@ public class Camera implements Runnable
   }
 
  /**
-  * @brief stops the camera thread
-  * 
-  * @return Result indicating the success of the operation 
+  * Stops the camera thread gracefully and releases resources.
+  *
+  * @return A {@link Resource.Result} indicating the outcome of the shutdown.
   */
   public Resource.Result closeCamera()
   {
@@ -136,11 +145,9 @@ public class Camera implements Runnable
   }
   
   /**
-   * @brief Helper function to put Mat Objects in the queue
-   * 
-   * @param Mat Object for processing
-   * 
-   * @return none
+   * Places a cropped face image onto the processing queue.
+   *
+   * @param face The {@link Mat} object representing the cropped face.
    */
   private void processFaceForRecognition(Mat face)
   {
@@ -157,9 +164,7 @@ public class Camera implements Runnable
   }
   
   /**
-   * @brief Helper function to release the camera and frame resources
-   * 
-   * @return none 
+   * Releases all associated OpenCV resources to prevent memory leaks.
    */
   private void releaseResources() 
   {

@@ -1,8 +1,11 @@
 /**
- * @brief Admin options for editing the database 
- * 
+ * @brief Provides the administrative user interface for managing the user database.
+ * <p>
+ * This class creates and manages the Swing frames for adding, editing, and deleting users.
+ * It handles user input, file selection for user images, and communicates with the
+ * data access layer to persist changes.
+ *
  * @author Ben Pilande, Carl Negrescu
- * 
  * @date 11/25/24
  */
 package frontend;
@@ -67,11 +70,20 @@ public class AdminUI extends JFrame
 	private List<Resource> listUsers = new ArrayList<Resource>();
 	private boolean fileAdded = false;
 
+	 /**
+   * Constructs the AdminUI controller.
+   *
+   * @param dao The data access object to be used for database interactions.
+   */
 	public AdminUI(IDataAccess dao) 
 	{
 		_dao = dao;
 	}
-	//Frames
+	
+  /**
+   * Creates and displays the frame for adding a new user.
+   * The frame includes text fields for first and last names and a button to upload an image.
+   */
 	protected void addFrame() 
 	{
 		//Initialize Frame, Panel, and listener
@@ -124,6 +136,10 @@ public class AdminUI extends JFrame
 		addFrame.setVisible(true);
 	}
 	
+	 /**
+   * Creates and displays the frame for deleting an existing user.
+   * It presents a list of current users, allowing the admin to select one for deletion.
+   */
 	public void deleteFrame() {
     // Initialize Frame
     deleteFrame = new JFrame("Delete a User");
@@ -212,7 +228,11 @@ public class AdminUI extends JFrame
     deleteFrame.add(deletePane);
 }
 
-	
+	 /**
+   * Creates and displays the frame for editing an existing user.
+   * It shows a list of users and, upon selection, populates form fields
+   * with the user's current data for modification.
+   */
 	public void editFrame() {
     // Initialize Frame
     editFrame = new JFrame("Edit a User");
@@ -330,7 +350,12 @@ public class AdminUI extends JFrame
     editFrame.setVisible(true);
 }
 
-
+  /**
+   * Opens a file chooser dialog to select an image file for a user.
+   * The selected image is processed to detect a face, which is then cropped and stored.
+   *
+   * @return A {@link Resource.Result} indicating if the file was successfully chosen and processed.
+   */
 	private Resource.Result fileFrame() 
 	{
 	  Resource.Result result = Resource.Result.RESULT_OK;
@@ -364,6 +389,7 @@ public class AdminUI extends JFrame
 		}
 		return result;
 	}
+	
 	private void confirmDeleteFrame() {
 		int option = JOptionPane.showConfirmDialog(addFrame, "Are you sure you want to delete this User?",
 				"Delete Confirmation",JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
@@ -371,7 +397,13 @@ public class AdminUI extends JFrame
 			deleteUser();
 	}
 
-	//Logic
+  /**
+   * Handles the logic for adding a new user to the database.
+   * It collects data from the input fields in the addFrame, creates a new {@link Resource} object,
+   * and calls the DAO to save the new user.
+   *
+   * @return A {@link Resource.Result} indicating the success or failure of the operation.
+   */
 	private Resource.Result addUser() 
 	{
 	  Resource.Result result = Resource.Result.RESULT_OK;
@@ -420,7 +452,11 @@ public class AdminUI extends JFrame
 		userImage = cropFace;
 	}
 
-	//Method to style buttons consistently
+  /**
+   * Applies a consistent visual style to a JButton.
+   *
+   * @param button The {@link JButton} to be styled.
+   */
 	public void styleButton(JButton button) {
 		button.setFont(new Font("Arial", Font.BOLD, 16));
 		button.setForeground(TEXT_COLOR);

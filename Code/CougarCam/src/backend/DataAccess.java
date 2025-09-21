@@ -1,8 +1,12 @@
 /**
- * @brief DataBase Access Object, to Update, Add, Delete rows, and return whole tables
- * 
+ * @brief Data Access Object (DAO) for handling all interactions with the SQLite database.
+ * <p>
+ * This class implements the {@link IDataAccess} interface and provides concrete
+ * methods for adding, deleting, updating, and retrieving user data from the
+ * `facesDataBase.db` file. It also handles serialization of OpenCV {@link Mat} objects
+ * for storage as BLOBs.
+ *
  * @author Carl Negrescu
- * 
  * @date 11/16/2024
  */
 package backend;
@@ -41,6 +45,9 @@ public class DataAccess implements IDataAccess
   Connection connection;
   SerializeData serializeData;
 
+  /**
+   * Constructs the DataAccess object and establishes a connection to the database.
+   */
   public DataAccess()
   {
     serializeData = new SerializeData(); 
@@ -57,12 +64,9 @@ public class DataAccess implements IDataAccess
   }
 
   /**
-   * @brief Adds a user to the database
-   * 
-   * @param Resource object with all the users details 
-   * 
-   * @return Result indicating the success of the operation 
+   * {@inheritDoc}
    */
+  @Override
   public Resource.Result addUser(Resource inputUser)
   {
     Resource.Result result = Resource.Result.RESULT_OK;
@@ -91,12 +95,9 @@ public class DataAccess implements IDataAccess
   }
   
   /**
-   * @brief deletes a user in the database, indexes through the users first name 
-   * 
-   * @param String FirstName, user to delete
-   * 
-   * @return Result indicating the success of the operation
+   * {@inheritDoc}
    */
+  @Override
   public Resource.Result deleteUser(String firstName) 
   {
     Resource.Result result = Resource.Result.RESULT_OK;
@@ -126,12 +127,9 @@ public class DataAccess implements IDataAccess
   }
   
   /**
-   * @brief updates a user in the database, uses the users first name to find the user in the database 
-   * 
-   * @param Resource Object, String FirstName, object to replace in the database, firstname of the user to update. 
-   * 
-   * @return Result indicating the success of the operation 
+   * {@inheritDoc}
    */
+  @Override
   public Resource.Result updateUser(Resource inputUser, String firstName) 
   {
     Resource.Result result = Resource.Result.RESULT_OK;
@@ -159,13 +157,10 @@ public class DataAccess implements IDataAccess
     return result;
   }
 
-  /** 
-   * @brief Takes in the User ID and returns the User's name
-   * 
-   * @param int id
-   * 
-   * @return Resource Object
+  /**
+   * {@inheritDoc}
    */
+  @Override
   public Resource getUser(int id) 
   {
     String query = "SELECT * FROM users WHERE id = ?";
@@ -188,10 +183,9 @@ public class DataAccess implements IDataAccess
   }
 
   /**
-   * @brief gets all the users in the database and returns it in a Array list
-   * 
-   * @return List of Mat objects 
+   * {@inheritDoc}
    */
+  @Override
   public List<Resource> getUsers()
   {
     List<Resource> listUsers = new ArrayList<Resource>();

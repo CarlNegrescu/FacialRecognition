@@ -1,8 +1,12 @@
 /**
- * @brief Manager Class of the CameraModule and the Facial Recognition class
- * 
+ * @brief Manages the core facial recognition process by coordinating the camera and recognizer threads.
+ * <p>
+ * This class acts as a central controller. It initializes the camera and facial recognition modules
+ * and uses {@link ArrayBlockingQueue} to pass data between them. It also contains logic to
+ * determine if a user is authenticated based on a confidence threshold of repeated recognitions.
+ *
  * @author Carl Negrescu
- * @data 11/15/2024
+ * @date 11/15/2024
  */
 package cougarCam;
 
@@ -42,10 +46,9 @@ public class DoorManager implements Runnable
   private int 			_nonValidFace;
 
   /**
-   * @brief Constructor creates the camera and facial Recognition objects
-   * 
-   * @param DataAccess Object indicating which database to use
-   * 
+   * Constructs a DoorManager instance.
+   *
+   * @param dao The data access object for retrieving user data for recognition.
    */
   public DoorManager(IDataAccess dao)
   {
@@ -61,7 +64,7 @@ public class DoorManager implements Runnable
   }
 
   /**
-   *  @brief starts the doorManager thread
+   * Starts the DoorManager thread, which in turn starts the camera and facial recognition processes.
    */
   public void startDoorManager()
   {
@@ -70,9 +73,9 @@ public class DoorManager implements Runnable
   }
   
   /**
-   * @brief stops the doorManager Thread 
-   * 
-   * @return Result indicating the success of the operation
+   * Stops the DoorManager and all associated threads (camera, recognizer) gracefully.
+   *
+   * @return A {@link Resource.Result} indicating the outcome of the shutdown process.
    */
   public Resource.Result stopDoorManager()
   {
@@ -108,12 +111,13 @@ public class DoorManager implements Runnable
   }
   
   /**
-   * @brief To combat the sometimes the poor recognition displayMessage waits until there are 5 valid faces in a session to determine if the user is recognized, 
-   *        or 30 invalid faces if the user is not recognized.
-   *        
-   * @param Resource object contains the users information and if it is recognized.
-   * 
-   * @return none 
+   * Analyzes recognition results to provide a confident authentication decision.
+   * <p>
+   * To prevent false positives/negatives, this method requires 5 consecutive valid recognitions
+   * to grant access or 30 consecutive invalid recognitions to deny access before showing a popup.
+   *
+   * @param result The {@link Resource} object containing the latest recognition result.
+   * @throws InterruptedException if the thread is interrupted while waiting.
    */
   private void displayMessage(Resource result) throws InterruptedException
   {
@@ -150,7 +154,10 @@ public class DoorManager implements Runnable
   }
   
   /**
-   * @brief helper class that does the pop up implementation for (un)recognized users 
+   * Displays a temporary popup message to the user.
+   *
+   * @param message The message to be displayed.
+   * @param bgColor The background color of the popup window (e.g., green for success, red for failure).
    */
   private void showPopup(String message, Color bgColor) 
   {
@@ -178,7 +185,8 @@ public class DoorManager implements Runnable
   }
 
   /**
-   * @brief point of entry of the thread, responsible of managing the output of the facialRecognition object
+   * The main execution loop for the DoorManager thread.
+   * It continuously takes recognition results from the completedQueue and processes them.
    */
   @Override
   public void run()
